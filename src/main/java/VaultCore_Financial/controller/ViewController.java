@@ -33,12 +33,12 @@ public class ViewController {
         try {
             AuthResponse res = authService.login(request);
 
-            // ✅ store token in page (you can show it)
+            
             model.addAttribute("msg", "Login Success ✅ AccessToken: " + res.getAccessToken());
 
             return "dashboard";
         } catch (Exception e) {
-            model.addAttribute("msg", "Login Failed ❌");
+            model.addAttribute("msg", "Login Failed ");
             model.addAttribute("loginRequest", new LoginRequest());
             return "login";
         }
@@ -50,7 +50,7 @@ public class ViewController {
             BigDecimal balance = balanceService.getBalance(accountNumber);
             model.addAttribute("balance", balance);
         } catch (Exception e) {
-            model.addAttribute("balanceMsg", "Account Not Found ❌");
+            model.addAttribute("balanceMsg", "Account Not Found ");
         }
         return "dashboard";
     }

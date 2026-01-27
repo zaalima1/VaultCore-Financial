@@ -16,7 +16,7 @@ public class User {
     private String role;
     private Instant createdAt;
 
-    // ✅ Constructors
+   
     public User() {
     }
 
@@ -28,7 +28,7 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    // ✅ Getters and Setters
+
     public Long getId() {
         return id;
     }
