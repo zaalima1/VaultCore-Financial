@@ -44,4 +44,9 @@
 	    private Jws<Claims> parseClaims(String token) {
 	        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 	    }
+
+		public String extractUsername(String token) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}

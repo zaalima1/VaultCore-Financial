@@ -1,16 +1,17 @@
 package VaultCore_Financial.config;
 
+import java.io.IOException;
+import java.util.Collections;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.List;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -20,26 +21,62 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
     }
 
+    // ✅ Skip JWT filter for public & auth endpoints
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
 
-        String auth = request.getHeader("Authorization");
+        return path.startsWith("/api/auth/")
+                || path.equals("/")
+                || path.startsWith("/css/")
+                || path.startsWith("/js/")
+                || path.startsWith("/images/")
+                || path.startsWith("/webjars/");
+    }
 
-        if (auth != null && auth.startsWith("Bearer ")) {
-            String token = auth.substring(7);
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
+            throws ServletException, IOException {
 
-            if (jwtService.isValid(token)) {
-                String email = jwtService.extractSubject(token);
+        String authHeader = request.getHeader("Authorization");
 
-                var authentication = new UsernamePasswordAuthenticationToken(
-                        email,
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_USER"))
+        // ✅ No token → continue without authentication
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = authHeader.substring(7);
+
+        try {
+            String username = jwtService.extractUsername(token);
+
+            if (username != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null &&
+                jwtService.isValid(token)) {
+
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                username,
+                                null,
+                                Collections.emptyList()
+                        );
+
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource()
+                                .buildDetails(request)
                 );
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authToken);
             }
+
+        } catch (Exception e) {
+            // ❗ Invalid token → clear context and continue
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);

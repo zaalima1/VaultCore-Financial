@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<h2>Dashboard</h2>
+
+
+<p th:if="${msg != null}" th:text="${msg}"></p>
+
+
+<p th:if="${token != null}">
+    <b>Token:</b> <span th:text="${token}"></span>
+</p>
+
+<hr>
+
+<h3>Check Balance</h3>
+
+<form th:action="@{/balance}" method="get">
+    <label>Account Number:</label><br>
+    <input type="text" name="accountNumber" placeholder="Enter Account Number" required>
+    <br><br>
+    <button type="submit">Check Balance</button>
+</form>
+
+<br>
+
+<p th:if="${balance != null}">
+    ✅ <b>Balance:</b> <span th:text="${balance}"></span>
+</p>
+
+<p th:if="${balanceMsg != null}" th:text="${balanceMsg}"></p>
+
+</body>
+</html>
