@@ -1,35 +1,185 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>User Login</title>
+    <title>VaultCore Financial | User Login</title>
     <meta charset="UTF-8">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f6f9fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .brand {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .brand h1 {
+            margin: 10px 0 4px;
+            font-size: 28px;
+            color: #0f172a;
+        }
+
+        .brand p {
+            color: #475569;
+            font-size: 15px;
+        }
+
+        .login-card {
+            margin-top: 40px;
+            background: #ffffff;
+            width: 420px;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+            border: 1px solid #dbeafe;
+        }
+
+        .login-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .login-header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #1e40af;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        input {
+            width: 100%;
+            margin-top: 6px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            background: #f8fafc;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: #ffffff;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .msg {
+            margin-bottom: 16px;
+            color: #dc2626;
+            font-size: 14px;
+        }
+
+        .security {
+            margin-top: 22px;
+            font-size: 13px;
+            color: #475569;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 14px;
+        }
+
+        .security strong {
+            color: #16a34a;
+        }
+
+        .register {
+            margin-top: 16px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .register a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
 
-<h2>User Login</h2>
+    <!-- Branding -->
+    <div class="brand">
+        <h1>VaultCore Financial</h1>
+        <p>Enterprise Banking Platform</p>
+    </div>
 
-<!-- ✅ Message -->
-<p th:if="${msg != null}" th:text="${msg}"></p>
+    <!-- Login Card -->
+    <div class="login-card">
 
-<form th:action="@{/login}" th:object="${loginRequest}" method="post">
+        <div class="login-header">
+            <h2>User Login</h2>
+        </div>
 
-    <label>Email:</label><br>
-    <input type="email" th:field="*{email}" placeholder="Enter Email" required>
-    <br><br>
+        <div class="subtitle">
+            JWT-based authentication with advanced security
+        </div>
 
-    <label>Password:</label><br>
-    <input type="password" th:field="*{password}" placeholder="Enter Password" required>
-    <br><br>
+        <p class="msg" th:if="${msg != null}" th:text="${msg}"></p>
 
-    <button type="submit">Login</button>
-</form>
+        <form th:action="@{/login}" th:object="${loginRequest}" method="post">
 
-<br>
-<p>
-    Don’t have an account?
-    <a th:href="@{/register-page}">Register</a>
-</p>
+            <label>Email / Username</label>
+            <input type="email" th:field="*{email}" placeholder="user@example.com" required>
+
+            <br><br>
+
+            <label>Password</label>
+            <input type="password" th:field="*{password}" placeholder="Enter your password" required>
+
+            <button type="submit">Sign In as User</button>
+        </form>
+
+        <div class="security">
+            <strong>Session Security:</strong> Your session will auto-expire after 30 minutes of inactivity.<br><br>
+            Refresh tokens are rotated on each authentication cycle for enhanced security.
+        </div>
+
+        <div class="register">
+            Don’t have an account?
+            <a th:href="@{/register-page}">Register</a>
+        </div>
+
+    </div>
 
 </body>
 </html>

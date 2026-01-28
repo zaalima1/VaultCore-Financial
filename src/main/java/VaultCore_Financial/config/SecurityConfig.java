@@ -30,12 +30,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(withDefaults())
 
-            // ✅ JWT Stateless
+           
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ Allow Thymeleaf pages
+                
                 .requestMatchers(
                         "/",
                         "/register-page",
@@ -45,7 +45,7 @@ public class SecurityConfig {
                         "/dashboard-page"
                 ).permitAll()
 
-                // ✅ Allow Static resources (CSS/JS/Images)
+                
                 .requestMatchers(
                         "/css/**",
                         "/js/**",
@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
 
-            // ✅ JWT Filter
+            
             .addFilterBefore(new JwtAuthFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

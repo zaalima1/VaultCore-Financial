@@ -27,29 +27,26 @@ public class ViewController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public ViewController(AuthService authService,
-                          BalanceService balanceService,
-                          UserRepository userRepository,
-                          PasswordEncoder passwordEncoder) {
+    public ViewController(AuthService authService,BalanceService balanceService,UserRepository userRepository,PasswordEncoder passwordEncoder) {
         this.authService = authService;
         this.balanceService = balanceService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    // ✅ REGISTER PAGE
+    
     @GetMapping("/register-page")
     public String registerPage(Model model) {
         model.addAttribute("user", new User());
         return "register";
     }
 
-    // ✅ REGISTER SUBMIT → Redirect to Login Page
+    
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user, RedirectAttributes ra) {
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            ra.addFlashAttribute("msg", "Email already exists ");
+            ra.addFlashAttribute("msg", "Email already exists");
             return "redirect:/register-page";
         }
 
@@ -65,18 +62,18 @@ public class ViewController {
 
         userRepository.save(user);
 
-        ra.addFlashAttribute("msg", "Registration Success ✅ Please Login");
+        ra.addFlashAttribute("msg", "Registration Success  Please Login");
         return "redirect:/login-page";
     }
 
-    // ✅ LOGIN PAGE
+    
     @GetMapping("/login-page")
     public String loginPage(Model model) {
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
     }
 
-    // ✅ LOGIN SUBMIT → Redirect to Dashboard
+    
     @PostMapping("/login")
     public String login(@ModelAttribute LoginRequest request, RedirectAttributes ra) {
 
@@ -94,13 +91,13 @@ public class ViewController {
         }
     }
 
-    // ✅ DASHBOARD PAGE
+    
     @GetMapping("/dashboard-page")
     public String dashboardPage() {
         return "dashboard";
     }
 
-    // ✅ BALANCE CHECK (from dashboard)
+    
     @GetMapping("/balance")
     public String balance(@RequestParam String accountNumber, RedirectAttributes ra) {
 
@@ -109,7 +106,7 @@ public class ViewController {
             ra.addFlashAttribute("balance", balance);
 
         } catch (Exception e) {
-            ra.addFlashAttribute("balanceMsg", "Account Not Found ❌");
+            ra.addFlashAttribute("balanceMsg", "Account Not Found ");
         }
 
         return "redirect:/dashboard-page";
