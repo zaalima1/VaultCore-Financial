@@ -27,7 +27,6 @@ public class AuthService {
         this.refreshTokenService = refreshTokenService;
     }
 
-    // ✅ Add it here
     public AuthResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
@@ -40,6 +39,11 @@ public class AuthService {
         String accessToken = jwtService.generateAccessToken(user.getEmail(), 0);
         String refreshToken = refreshTokenService.create(user).getToken();
 
-        return new AuthResponse(accessToken, refreshToken);
+        // ✅ INCLUDE ROLE
+        return new AuthResponse(
+                accessToken,
+                refreshToken,
+                user.getRole()
+        );
     }
 }

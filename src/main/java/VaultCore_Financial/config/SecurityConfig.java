@@ -42,7 +42,8 @@ public class SecurityConfig {
                         "/register",
                         "/login-page",
                         "/login",
-                        "/dashboard-page"
+                        "/dashboard-page",
+                        "/admin/dashboard"  
                 ).permitAll()
 
                 

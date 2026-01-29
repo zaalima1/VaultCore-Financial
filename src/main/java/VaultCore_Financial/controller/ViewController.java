@@ -75,7 +75,8 @@ public class ViewController {
 
     
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequest request, RedirectAttributes ra) {
+    public String login(@ModelAttribute LoginRequest request,
+                        RedirectAttributes ra) {
 
         try {
             AuthResponse res = authService.login(request);
@@ -83,13 +84,19 @@ public class ViewController {
             ra.addFlashAttribute("msg", "Login Success ✅");
             ra.addFlashAttribute("token", res.getAccessToken());
 
-            return "redirect:/dashboard-page";
+            // ✅ ROLE BASED REDIRECT
+            if ("ADMIN".equalsIgnoreCase(res.getRole())) {
+                return "redirect:/admin/dashboard";
+            } else {
+                return "redirect:/dashboard-page";
+            }
 
         } catch (Exception e) {
             ra.addFlashAttribute("msg", "Login Failed ❌ " + e.getMessage());
             return "redirect:/login-page";
         }
     }
+
 
     
     @GetMapping("/dashboard-page")

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>VaultCore Financial - Admin Portal</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f6f8fb;
+        }
+
+        /* HEADER */
+        .topbar {
+            background: linear-gradient(90deg, #0f172a, #020617);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            background-color: #fbbf24;
+            border-radius: 8px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #cbd5f5;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .badge {
+            background: #f59e0b;
+            color: #111827;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: #334155;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        /* ALERT */
+        .alert {
+            margin: 20px;
+            background: #fff7ed;
+            border: 1px solid #fbbf24;
+            padding: 14px;
+            border-radius: 10px;
+            color: #92400e;
+        }
+
+        /* STATS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .placeholder {
+            margin-top: 12px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        /* CONTENT */
+        .content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        th {
+            text-align: left;
+            color: #475569;
+        }
+
+        .empty-box {
+            padding: 20px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🔷 TOP BAR -->
+<div class="topbar">
+    <div class="topbar-left">
+        <div class="logo"></div>
+        <div>
+            <div><b>VaultCore Financial - Admin Portal</b></div>
+            <div class="subtitle">Audit & Compliance Dashboard</div>
+        </div>
+    </div>
+
+    <div class="topbar-right">
+        <span class="badge">AUDITOR ACCESS</span>
+        <div>
+            <div th:text="${adminEmail}">admin@vaultcore.com</div>
+            <div class="subtitle">System Administrator</div>
+        </div>
+        <a href="/dashboard-page" class="btn">Back to User View</a>
+    </div>
+</div>
+
+<!-- 🔶 READ ONLY ALERT -->
+<div class="alert">
+    <b>Read-Only Audit Mode:</b>
+    This interface is strictly view-only. No data modifications are permitted.
+</div>
+
+<!-- 🔷 STATS (EMPTY) -->
+<div class="stats">
+    <div class="card">
+        <h3>Total Transactions</h3>
+        <div class="placeholder">No data loaded</div>
+    </div>
+
+    <div class="card">
+        <h3>Constraint Validation</h3>
+        <div class="placeholder">No metrics available</div>
+    </div>
+
+    <div class="card">
+        <h3>Security Events</h3>
+        <div class="placeholder">No recent events</div>
+    </div>
+</div>
+
+<!-- 🔷 MAIN CONTENT -->
+<div class="content">
+
+    <!-- 🔹 TRANSACTION LEDGER (EMPTY) -->
+    <div class="card">
+        <h3>Immutable Transaction Ledger</h3>
+        <p class="subtitle">Read-only audit view with ACID compliance</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Timestamp</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+        </table>
+
+        <div class="empty-box">
+            No ledger entries loaded
+        </div>
+    </div>
+
+    <!-- 🔹 AUDIT TRAIL (EMPTY) -->
+    <div class="card">
+        <h3>Audit Trail</h3>
+
+        <div class="empty-box">
+            No audit events available
+        </div>
+
+        <br>
+        <button class="btn">Export Full Audit Log</button>
+    </div>
+
+</div>
+
+</body>
+</html>
