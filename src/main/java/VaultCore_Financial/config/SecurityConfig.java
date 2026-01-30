@@ -27,26 +27,30 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtService jwtService) throws Exception {
 
         http
+            // ✅ Disable CSRF for JWT
             .csrf(csrf -> csrf.disable())
             .cors(withDefaults())
 
-           
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // ✅ Stateless session
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
 
             .authorizeHttpRequests(auth -> auth
 
-                
+                // ✅ Public routes
                 .requestMatchers(
                         "/",
                         "/register-page",
                         "/register",
                         "/login-page",
                         "/login",
+                        "/verify-otp",
                         "/dashboard-page",
-                        "/admin/dashboard"  
+                        "/admin/dashboard"
                 ).permitAll()
 
-                
+                // ✅ Static resources
                 .requestMatchers(
                         "/css/**",
                         "/js/**",
@@ -54,14 +58,11 @@ public class SecurityConfig {
                         "/webjars/**"
                 ).permitAll()
 
-//                // ✅ Allow Auth APIs
-//                .requestMatchers("").permitAll()
-
-                // ✅ Everything else requires JWT
+                // 🔒 Everything else secured
                 .anyRequest().authenticated()
             )
 
-            
+            // ✅ JWT Filter
             .addFilterBefore(new JwtAuthFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

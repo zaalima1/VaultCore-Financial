@@ -6,10 +6,7 @@ import java.time.Instant;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import VaultCore_Financial.dto.AuthResponse;
@@ -27,21 +24,24 @@ public class ViewController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public ViewController(AuthService authService,BalanceService balanceService,UserRepository userRepository,PasswordEncoder passwordEncoder) {
+    public ViewController(AuthService authService,
+                          BalanceService balanceService,
+                          UserRepository userRepository,
+                          PasswordEncoder passwordEncoder) {
         this.authService = authService;
         this.balanceService = balanceService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    
+    // ================= REGISTER =================
+
     @GetMapping("/register-page")
     public String registerPage(Model model) {
         model.addAttribute("user", new User());
         return "register";
     }
 
-    
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user, RedirectAttributes ra) {
 
@@ -52,39 +52,64 @@ public class ViewController {
 
         user.setCreatedAt(Instant.now());
 
-        
         if (user.getRole() == null || user.getRole().isEmpty()) {
             user.setRole("USER");
         }
 
-        
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         userRepository.save(user);
 
-        ra.addFlashAttribute("msg", "Registration Success  Please Login");
+        ra.addFlashAttribute("msg", "Registration Success — Please Login");
         return "redirect:/login-page";
     }
 
-    
+    // ================= LOGIN =================
+
     @GetMapping("/login-page")
     public String loginPage(Model model) {
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
     }
 
-    
+    /**
+     * STEP 1 → Validate email & password and send OTP
+     */
     @PostMapping("/login")
     public String login(@ModelAttribute LoginRequest request,
-                        RedirectAttributes ra) {
+                        Model model) {
 
         try {
-            AuthResponse res = authService.login(request);
+            authService.initiateLogin(request);
 
-            ra.addFlashAttribute("msg", "Login Success ✅");
-            ra.addFlashAttribute("token", res.getAccessToken());
+            model.addAttribute("otpStage", true);
+            model.addAttribute("email", request.getEmail());
+            model.addAttribute("msg", "OTP sent successfully");
 
-            // ✅ ROLE BASED REDIRECT
+            return "login";
+
+        } catch (Exception e) {
+            model.addAttribute("msg", "Login Failed ❌ " + e.getMessage());
+            return "login";
+        }
+    }
+
+    /**
+     * STEP 2 → Verify OTP and redirect
+     */
+    @PostMapping("/verify-otp")
+    public String verifyOtp(@RequestParam String email,
+                            @RequestParam String otp,
+                            RedirectAttributes ra,
+                            Model model) {
+
+        try {
+            // 🔐 Verify OTP
+            AuthResponse res = authService.verifyOtp(email, otp);
+
+            // ✅ Flash success message
+            ra.addFlashAttribute("msg", "Login Successful ✅");
+
+            // ✅ ROLE-BASED REDIRECT
             if ("ADMIN".equalsIgnoreCase(res.getRole())) {
                 return "redirect:/admin/dashboard";
             } else {
@@ -92,19 +117,24 @@ public class ViewController {
             }
 
         } catch (Exception e) {
-            ra.addFlashAttribute("msg", "Login Failed ❌ " + e.getMessage());
-            return "redirect:/login-page";
+            // ❌ If OTP fails → stay on OTP screen
+            model.addAttribute("otpStage", true);
+            model.addAttribute("email", email);
+            model.addAttribute("msg", "Invalid OTP ❌ Try again");
+
+            return "login";
         }
     }
 
+    // ================= DASHBOARD =================
 
-    
     @GetMapping("/dashboard-page")
     public String dashboardPage() {
         return "dashboard";
     }
 
-    
+    // ================= BALANCE =================
+
     @GetMapping("/balance")
     public String balance(@RequestParam String accountNumber, RedirectAttributes ra) {
 
@@ -113,7 +143,7 @@ public class ViewController {
             ra.addFlashAttribute("balance", balance);
 
         } catch (Exception e) {
-            ra.addFlashAttribute("balanceMsg", "Account Not Found ");
+            ra.addFlashAttribute("balanceMsg", "Account Not Found");
         }
 
         return "redirect:/dashboard-page";

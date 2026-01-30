@@ -45,13 +45,6 @@
             border: 1px solid #dbeafe;
         }
 
-        .login-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
         .login-header h2 {
             margin: 0;
             font-size: 20px;
@@ -116,70 +109,60 @@
             border-top: 1px solid #e2e8f0;
             padding-top: 14px;
         }
-
-        .security strong {
-            color: #16a34a;
-        }
-
-        .register {
-            margin-top: 16px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .register a {
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 600;
-        }
     </style>
 </head>
 
 <body>
 
-    <!-- Branding -->
-    <div class="brand">
-        <h1>VaultCore Financial</h1>
-        <p>Enterprise Banking Platform</p>
+<div class="brand">
+    <h1>VaultCore Financial</h1>
+    <p>Enterprise Banking Platform</p>
+</div>
+
+<div class="login-card">
+
+    <div class="login-header">
+        <h2 th:text="${otpStage} ? 'OTP Verification' : 'User Login'"></h2>
     </div>
 
-    <!-- Login Card -->
-    <div class="login-card">
-
-        <div class="login-header">
-            <h2>User Login</h2>
-        </div>
-
-        <div class="subtitle">
-            JWT-based authentication with advanced security
-        </div>
-
-        <p class="msg" th:if="${msg != null}" th:text="${msg}"></p>
-
-        <form th:action="@{/login}" th:object="${loginRequest}" method="post">
-
-            <label>Email / Username</label>
-            <input type="email" th:field="*{email}" placeholder="user@example.com" required>
-
-            <br><br>
-
-            <label>Password</label>
-            <input type="password" th:field="*{password}" placeholder="Enter your password" required>
-
-            <button type="submit">Sign In as User</button>
-        </form>
-
-        <div class="security">
-            <strong>Session Security:</strong> Your session will auto-expire after 30 minutes of inactivity.<br><br>
-            Refresh tokens are rotated on each authentication cycle for enhanced security.
-        </div>
-
-        <div class="register">
-            Don’t have an account?
-            <a th:href="@{/register-page}">Register</a>
-        </div>
-
+    <div class="subtitle">
+        Secure 2-Step Authentication
     </div>
+
+    <p class="msg" th:if="${msg != null}" th:text="${msg}"></p>
+
+    <!-- ================= STEP 1 LOGIN ================= -->
+	<form th:if="${otpStage == null}" th:action="@{/login}" th:object="${loginRequest}" method="post">
+
+	    <label>Email</label>
+	    <input type="email" th:field="*{email}" required>
+
+	    <br><br>
+
+	    <label>Password</label>
+	    <input type="password" th:field="*{password}" required>
+
+	    <button type="submit">Send OTP</button>
+	</form>
+
+    <!-- ================= STEP 2 OTP ================= -->
+	<form th:if="${otpStage}" th:action="@{/verify-otp}" method="post">
+
+	    <input type="hidden" name="email" th:value="${email}"/>
+
+	    <label>Enter OTP</label>
+	    <input type="text" name="otp" required>
+
+	    <button type="submit">Verify OTP</button>
+	</form>
+
+
+    <div class="security">
+        <strong>Session Security:</strong>
+        OTP expires in 5 minutes. Refresh tokens are rotated for security.
+    </div>
+
+</div>
 
 </body>
 </html>

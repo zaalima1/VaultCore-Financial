@@ -16,30 +16,50 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
+    private final OtpService otpService;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        JwtService jwtService,
-                       RefreshTokenService refreshTokenService) {
+                       RefreshTokenService refreshTokenService,
+                       OtpService otpService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
+        this.otpService = otpService;
     }
 
-    public AuthResponse login(LoginRequest request) {
+    /**
+     * STEP 1: Validate email & password, then send OTP
+     */
+    public void initiateLogin(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+                .orElseThrow(() -> new RuntimeException("Invalid email"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new RuntimeException("Invalid password");
         }
 
-        String accessToken = jwtService.generateAccessToken(user.getEmail(), 0);
+        otpService.generateOtp(user.getEmail());
+    }
+
+    /**
+     * STEP 2: Verify OTP and generate tokens
+     */
+    public AuthResponse verifyOtp(String email, String otp) {
+
+        if (!otpService.verifyOtp(email, otp)) {
+            throw new RuntimeException("Invalid OTP");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String accessToken = jwtService.generateAccessToken(email, 15);
         String refreshToken = refreshTokenService.create(user).getToken();
 
-        // ✅ INCLUDE ROLE
         return new AuthResponse(
                 accessToken,
                 refreshToken,
