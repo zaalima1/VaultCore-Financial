@@ -19,12 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtService jwtService) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtService jwtService) throws Exception {
 
         http
             // ✅ Disable CSRF for JWT
@@ -69,7 +69,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }

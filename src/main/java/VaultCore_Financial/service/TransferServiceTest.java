@@ -1,5 +1,7 @@
 //package VaultCore_Financial.service;
 //
+//
+//
 //import static org.junit.jupiter.api.Assertions.assertTrue;
 //
 //import java.math.BigDecimal;
@@ -7,9 +9,9 @@
 //import java.util.concurrent.Executors;
 //import java.util.concurrent.TimeUnit;
 //
-//import org.junit.jupiter.api.Test;
+//
 //import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
+//
 //
 //@SpringBootTest
 //public class TransferServiceTest {
@@ -28,15 +30,29 @@
 //        for (int i = 0; i < 100; i++) {
 //            executor.submit(() -> {
 //                try {
-//                    transferService.transfer("ACC1001", "ACC2002", new BigDecimal("10"));
-//                } catch (Exception ignored) {}
+//                    TransferService.transfer(
+//                        "ACC1001",
+//                        "ACC2002",
+//                        new BigDecimal("10")
+//                    );
+//                } catch (Exception e) {
+//                    // ignore errors
+//                }
 //            });
 //        }
 //
 //        executor.shutdown();
 //        executor.awaitTermination(1, TimeUnit.MINUTES);
 //
-//        BigDecimal finalBalance = balanceService.getBalance("ACC1001");
+//        BigDecimal finalBalance;
+//		try {
+//			finalBalance = BalanceService.getBalance("ACC1001");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//        System.out.println("Final Balance: " + finalBalance);
 //
 //        assertTrue(finalBalance.compareTo(BigDecimal.ZERO) >= 0);
 //    }

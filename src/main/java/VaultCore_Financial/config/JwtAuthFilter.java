@@ -75,7 +75,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception e) {
-            // ❗ Invalid token → clear context and continue
+            
             SecurityContextHolder.clearContext();
         }
 
