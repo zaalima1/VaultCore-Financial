@@ -31,6 +31,7 @@ public class OtpService {
         System.out.println("OTP for " + email + " = " + otp); // simulate email
         return otp;
     }
+    
 
     public boolean verifyOtp(String email, String otp) {
         var tokenOpt = otpRepository.findTopByEmailOrderByIdDesc(email);

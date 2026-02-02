@@ -66,4 +66,17 @@ public class AuthService {
                 user.getRole()
         );
     }
+
+    /**
+     * 🔁 RESEND OTP
+     */
+    public void resendOtp(String email) {
+
+        // Ensure user exists
+        userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Generate & send NEW OTP
+        otpService.generateOtp(email);
+    }
 }

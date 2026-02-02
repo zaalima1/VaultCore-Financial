@@ -145,7 +145,7 @@
 	    <button type="submit">Send OTP</button>
 	</form>
 
-    <!-- ================= STEP 2 OTP ================= -->
+	<!-- ================= STEP 2 OTP ================= -->
 	<form th:if="${otpStage}" th:action="@{/verify-otp}" method="post">
 
 	    <input type="hidden" name="email" th:value="${email}"/>
@@ -155,6 +155,23 @@
 
 	    <button type="submit">Verify OTP</button>
 	</form>
+
+	<!-- ============ RESEND OTP ============ -->
+	<form th:if="${otpStage}" th:action="@{/resend-otp}" method="post" style="margin-top: 14px;">
+
+	    <input type="hidden" name="email" th:value="${email}"/>
+
+	    <button type="submit"
+	            style="
+	                background: transparent;
+	                color: #2563eb;
+	                border: 1px solid #c7d2fe;
+	                font-weight: 600;
+	            ">
+	        Resend OTP
+	    </button>
+	</form>
+
 
 
     <div class="security">

@@ -105,13 +105,10 @@ public class ViewController {
                             Model model) {
 
         try {
-            // 🔐 Verify OTP
             AuthResponse res = authService.verifyOtp(email, otp);
 
-            // ✅ Flash success message
             ra.addFlashAttribute("msg", "Login Successful ✅");
 
-            // ✅ ROLE-BASED REDIRECT
             if ("ADMIN".equalsIgnoreCase(res.getRole())) {
                 return "redirect:/admin/dashboard";
             } else {
@@ -119,7 +116,6 @@ public class ViewController {
             }
 
         } catch (Exception e) {
-            // ❌ If OTP fails → stay on OTP screen
             model.addAttribute("otpStage", true);
             model.addAttribute("email", email);
             model.addAttribute("msg", "Invalid OTP ❌ Try again");
@@ -127,6 +123,31 @@ public class ViewController {
             return "login";
         }
     }
+
+    
+    @PostMapping("/resend-otp")
+    public String resendOtp(@RequestParam String email, Model model) {
+
+        try {
+            // 🔁 Generate & send NEW OTP
+            authService.resendOtp(email);
+
+            model.addAttribute("otpStage", true);
+            model.addAttribute("email", email);
+            model.addAttribute("msg", "A new OTP has been sent to your email.");
+
+            return "login"; // ✅ correct view
+
+        } catch (Exception e) {
+            model.addAttribute("otpStage", true);
+            model.addAttribute("email", email);
+            model.addAttribute("msg", "Unable to resend OTP ❌");
+
+            return "login";
+        }
+    }
+
+
 
     // ================= DASHBOARD =================
 

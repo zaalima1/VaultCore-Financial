@@ -11,64 +11,71 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    PasswordEncoder passwordEncoder() {
+    BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    UserDetailsService userDetailsService() {
-        return username -> {
-            throw new RuntimeException("User not found");
-        };
-    }
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtService jwtService) throws Exception {
 
         http
+            // ✅ Disable CSRF (required for form POST + JWT)
             .csrf(csrf -> csrf.disable())
+            .cors(withDefaults())
+
+            // ⚠️ Stateless (works for now with your flow)
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+
             .authorizeHttpRequests(auth -> auth
-                // 🔓 OTP endpoints must be PUBLIC
+
+                // ✅ PUBLIC AUTH & UI ROUTES
                 .requestMatchers(
-                    "/login",
-                    "/send-otp",
-                    "/verify-otp",
-                    "/css/**",
-                    "/js/**"
+                        "/",
+                        "/register-page",
+                        "/register",
+                        "/login-page",
+                        "/login",
+                        "/verify-otp",
+                        "/resend-otp",     // ✅ FIX: REQUIRED
+                        "/dashboard-page",
+                        "/admin/dashboard",
+                        "/favicon.ico"
                 ).permitAll()
 
-                // 🔒 Everything else requires authentication
+                // ✅ STATIC RESOURCES
+                .requestMatchers(
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/webjars/**"
+                ).permitAll()
+
+                // 🔒 EVERYTHING ELSE
                 .anyRequest().authenticated()
             )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/dashboard", true)
-                .failureUrl("/login?error=true")
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout=true")
+
+            // ✅ JWT FILTER
+            .addFilterBefore(
+                new JwtAuthFilter(jwtService),
+                UsernamePasswordAuthenticationFilter.class
             );
 
         return http.build();
     }
 
-
     @Bean
     AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config
-    ) throws Exception {
+            AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }
