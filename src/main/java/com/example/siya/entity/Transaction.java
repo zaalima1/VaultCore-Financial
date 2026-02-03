@@ -1,9 +1,10 @@
 package com.example.siya.entity;
-import  jakarta.persistence.*;
+
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "transaction")
+@Table(name = "transactions")
 public class Transaction {
 
     @Id
@@ -12,13 +13,17 @@ public class Transaction {
 
     private Double amount;
 
-    @Column(name = "from_account_id")
-    private Long fromAccountId;
+    // 🔥 Sender account
+    @ManyToOne
+    @JoinColumn(name = "from_account_id", nullable = false)
+    private Account fromAccount;
 
-    @Column(name = "to_account_id")
-    private Long toAccountId;
+    // 🔥 Receiver account
+    @ManyToOne
+    @JoinColumn(name = "to_account_id", nullable = false)
+    private Account toAccount;
 
-	public Long getId() {
+    public Long getId() {
 		return id;
 	}
 
@@ -34,22 +39,36 @@ public class Transaction {
 		this.amount = amount;
 	}
 
-	public Long getFromAccountId() {
-		return fromAccountId;
+	public Account getFromAccount() {
+		return fromAccount;
 	}
 
-	public void setFromAccountId(Long fromAccountId) {
-		this.fromAccountId = fromAccountId;
+	public void setFromAccount(Account fromAccount) {
+		this.fromAccount = fromAccount;
 	}
 
-	public Long getToAccountId() {
-		return toAccountId;
+	public Account getToAccount() {
+		return toAccount;
 	}
 
-	public void setToAccountId(Long toAccountId) {
-		this.toAccountId = toAccountId;
+	public void setToAccount(Account toAccount) {
+		this.toAccount = toAccount;
 	}
 
-    // getters and setters
+	public LocalDateTime getTransactionTime() {
+		return transactionTime;
+	}
 
+	public void setTransactionTime(LocalDateTime transactionTime) {
+		this.transactionTime = transactionTime;
+	}
+
+	private LocalDateTime transactionTime;
+
+    @PrePersist
+    protected void onCreate() {
+        this.transactionTime = LocalDateTime.now();
+    }
+
+   
 }
