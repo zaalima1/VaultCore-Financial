@@ -7,13 +7,37 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfigs {
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())       // disable CSRF for JS
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()       // allow all requests
-            );
-        return http.build();
-    }
+	@Bean
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	    http
+	        .csrf(csrf -> csrf.disable())
+	        .authorizeHttpRequests(auth -> auth
+	            .requestMatchers(
+	                "/register-page",
+	                "/register",
+	                "/login-page",
+	                "/login",
+	                "/verify-otp",
+	                "/resend-otp",
+	                "/dashboard-page",
+	                "/dashboard",
+	                "/css/**",
+	                "/js/**",
+	                "/images/**"
+	            ).permitAll()
+	            .anyRequest().authenticated()
+	        )
+	        .formLogin(form -> form
+	            .loginPage("/login-page")
+	            .permitAll()
+	        )
+	        .logout(logout -> logout
+	            .logoutUrl("/logout")
+	            .logoutSuccessUrl("/login-page")
+	            .invalidateHttpSession(true)
+	            .deleteCookies("JSESSIONID")
+	        );
+
+	    return http.build();
+	}
 }

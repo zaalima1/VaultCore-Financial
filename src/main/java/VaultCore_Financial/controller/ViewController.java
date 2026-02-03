@@ -2,21 +2,26 @@ package VaultCore_Financial.controller;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import VaultCore_Financial.dto.AuthResponse;
 import VaultCore_Financial.dto.LoginRequest;
 import VaultCore_Financial.entity.User;
 import VaultCore_Financial.repo.UserRepository;
 import VaultCore_Financial.service.AuthService;
 import VaultCore_Financial.service.BalanceService;
-
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ViewController {
@@ -77,8 +82,7 @@ public class ViewController {
      * STEP 1 → Validate email & password and send OTP
      */
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequest request,
-                        Model model) {
+    public String login(@ModelAttribute LoginRequest request, Model model) {
 
         try {
             authService.initiateLogin(request);
@@ -95,80 +99,79 @@ public class ViewController {
         }
     }
 
-    /**
-     * STEP 2 → Verify OTP and redirect
-     */
     @PostMapping("/verify-otp")
     public String verifyOtp(@RequestParam String email,
                             @RequestParam String otp,
+                            HttpServletRequest request,
                             RedirectAttributes ra,
                             Model model) {
 
         try {
             AuthResponse res = authService.verifyOtp(email, otp);
 
-            ra.addFlashAttribute("msg", "Login Successful ✅");
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            email,
+                            null,
+                            List.of(() -> "ROLE_" + res.getRole())
+                    );
 
-            if ("ADMIN".equalsIgnoreCase(res.getRole())) {
-                return "redirect:/admin/dashboard";
-            } else {
-                return "redirect:/dashboard-page";
-            }
+            // ✅ Set authentication
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
+
+            // 🔥 THIS LINE IS THE REAL FIX
+            HttpSession session = request.getSession(true);
+            session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                context
+            );
+
+            ra.addFlashAttribute("msg", "Login Successful ✅");
+            return "redirect:/dashboard-page";
 
         } catch (Exception e) {
             model.addAttribute("otpStage", true);
             model.addAttribute("email", email);
-            model.addAttribute("msg", "Invalid OTP ❌ Try again");
-
+            model.addAttribute("msg", "Invalid OTP ❌");
             return "login";
         }
     }
 
-    
+
     @PostMapping("/resend-otp")
     public String resendOtp(@RequestParam String email, Model model) {
 
         try {
-            // 🔁 Generate & send NEW OTP
             authService.resendOtp(email);
 
             model.addAttribute("otpStage", true);
             model.addAttribute("email", email);
             model.addAttribute("msg", "A new OTP has been sent to your email.");
 
-            return "login"; // ✅ correct view
+            return "login";
 
         } catch (Exception e) {
             model.addAttribute("otpStage", true);
             model.addAttribute("email", email);
             model.addAttribute("msg", "Unable to resend OTP ❌");
-
             return "login";
         }
     }
 
-
-
     // ================= DASHBOARD =================
 
     @GetMapping("/dashboard-page")
-    public String dashboardPage() {
+    public String dashboardPages() {
         return "dashboard";
     }
 
-    // ================= BALANCE =================
+   
 
-    @GetMapping("/balance")
-    public String balance(@RequestParam String accountNumber, RedirectAttributes ra) {
-
-        try {
-            BigDecimal balance = balanceService.getBalance(accountNumber);
-            ra.addFlashAttribute("balance", balance);
-
-        } catch (Exception e) {
-            ra.addFlashAttribute("balanceMsg", "Account Not Found");
-        }
-
-        return "redirect:/dashboard-page";
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("Logged out successfully");
     }
 }

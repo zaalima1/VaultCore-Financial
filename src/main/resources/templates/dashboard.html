@@ -14,8 +14,6 @@
 
         body {
             min-height: 100vh;
-
-            /* 🔹 Background image */
             background-image: url("/images/dash.jpg");
             background-size: cover;
             background-position: center;
@@ -23,14 +21,12 @@
             background-attachment: fixed;
         }
 
-        /* ================= MAIN LAYOUT ================= */
         .layout {
             display: flex;
             min-height: 100vh;
-            background: rgba(246, 249, 252, 0.85); /* overlay */
+            background: rgba(246, 249, 252, 0.85);
         }
 
-        /* ================= SIDEBAR ================= */
         .sidebar {
             width: 240px;
             background: #0f172a;
@@ -74,14 +70,12 @@
             color: #f87171 !important;
         }
 
-        /* ================= CONTENT ================= */
         .main-content {
             margin-left: 240px;
             width: calc(100% - 240px);
             padding: 28px;
         }
 
-        /* ================= TOP BAR ================= */
         .topbar {
             background: white;
             padding: 16px 24px;
@@ -97,7 +91,6 @@
             font-size: 18px;
         }
 
-        /* ================= CARDS ================= */
         .card {
             background: white;
             border-radius: 16px;
@@ -116,7 +109,21 @@
             color: #64748b;
         }
 
-        /* ================= INFO GRID ================= */
+        .back-btn {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1px solid #2563eb;
+            background: #2563eb;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #1d4ed8;
+        }
+
         .info-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -140,7 +147,47 @@
             color: #64748b;
         }
 
-        /* ================= RESPONSIVE ================= */
+        .top-nav {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 12px 20px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .about-text {
+    max-width: 800px;
+    margin: 20px auto;
+    font-size: 17px;
+    line-height: 1.7;
+    color: #2c2c2c;
+    text-align: center;
+    padding: 20px 25px;
+    background: #f8f9fc;
+    border-left: 5px solid #2f80ed;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+        
+
+        .top-nav button {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid #2563eb;
+            background: transparent;
+            color: #2563eb;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .top-nav button:hover {
+            background: #2563eb;
+            color: white;
+        }
+
         @media (max-width: 900px) {
             .info-grid {
                 grid-template-columns: 1fr;
@@ -161,51 +208,145 @@
 
 <div class="layout">
 
-    <!-- ========== SIDEBAR ========== -->
+    <!-- SIDEBAR -->
     <aside class="sidebar">
         <h2>VaultCore</h2>
         <ul class="menu">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Check Balance</a></li>
-            <li><a href="#">Send Money</a></li>
-            <li><a href="#">Transactions</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="/logout" class="logout">Logout</a></li>
+            <li><a href="#" onclick="showDashboard()">Dashboard</a></li>
+            <li><a href="#" onclick="showDashboard()">Check Balance</a></li>
+            <li><a href="#" onclick="showDashboard()">Send Money</a></li>
+            <li><a href="#" onclick="showDashboard()">Transactions</a></li>
+            <li><a href="#" onclick="showDashboard()">History</a></li>
+            <li><a href="#" onclick="showDashboard()">Profile</a></li>
+            <li><a href="/logout" class="logout" id="logoutbtn">Logout</a></li>
         </ul>
     </aside>
 
-    <!-- ========== MAIN CONTENT ========== -->
+    <!-- MAIN CONTENT -->
     <div class="main-content">
 
-        <div class="topbar">
-            <h3>Welcome, User 👋</h3>
-            <span>Secure Banking Dashboard</span>
+        <marquee class="notice-marquee" behavior="scroll" direction="left" scrollamount="6">
+            🔔 Welcome to VaultCore Financial | Secure Banking • Fast Transfers • 24×7 Support | 📞 Contact: support@vaultcore.com
+        </marquee>
+
+        <div class="top-nav">
+            <button onclick="showDashboard()">Home</button>
+            <button onclick="showAbout()">About Us</button>
+            <button onclick="showContact()">Contact Us</button>
+            <button onclick="showSecurity()">Security GuideLine</button>
         </div>
 
-        <div class="card">
+        <!-- DASHBOARD -->
+        <div id="dashboardSection" class="card">
             <h3>Dashboard Overview</h3>
             <p class="subtitle">Manage your accounts and transactions securely</p>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <h4>Account Balance</h4>
+                    <span>View your current balance</span>
+                </div>
+
+                <div class="info-box">
+                    <h4>Money Transfer</h4>
+                    <span>Send money instantly</span>
+                </div>
+
+                <div class="info-box">
+                    <h4>Security</h4>
+                    <span>Protected with encryption</span>
+                </div>
+            </div>
         </div>
 
-        <div class="info-grid">
-            <div class="info-box">
-                <h4>Account Balance</h4>
-                <span>View your current balance</span>
-            </div>
+        <!-- ABOUT -->
+        <div id="aboutSection" class="card" style="display:none;">
+            <h3>About Us</h3>
+            <p class="subtitle">Who we are</p>
+           <p class="about-text">
+    VaultCore Financial is a next-generation digital banking platform built to deliver
+    fast, secure, and reliable financial services in one seamless experience.
+    We empower users to manage their accounts, transfer funds, and track transactions
+    with confidence and ease.
+    <br><br>
+    With enterprise-grade security, encrypted data protection, and real-time monitoring,
+    VaultCore Financial ensures every transaction is safe and transparent.
+    Our mission is to simplify banking through smart technology while maintaining
+    the highest standards of trust, privacy, and performance.
+</p>
+           
+            <button class="back-btn" onclick="showDashboard()">Back to Dashboard</button>
+        </div>
 
-            <div class="info-box">
-                <h4>Money Transfer</h4>
-                <span>Send money instantly</span>
-            </div>
+        <!-- CONTACT -->
+        <div id="contactSection" class="card" style="display:none;">
+            <h3>Contact Us</h3>
+            <p class="subtitle">We’re here to help</p>
+            <p>
+                📧 Email: support@vaultcore.com <br>
+                📞 Phone: +91 98765 43210 <br>
+                🏢 Location: Mumbai, India
+            </p>
+            <button class="back-btn" onclick="showDashboard()">Back to Dashboard</button>
+        </div>
 
-            <div class="info-box">
-                <h4>Security</h4>
-                <span>Protected with encryption</span>
-            </div>
+        <!-- SECURITY -->
+        <div id="securitySection" class="card" style="display:none;">
+            <h3>Security Guidelines</h3>
+            <p class="subtitle">Your safety matters</p>
+            <ul>
+                <li>✔ Never share your OTP or password</li>
+                <li>✔ Logout from public devices</li>
+                <li>✔ Enable 2-factor authentication</li>
+                <li>✔ Report suspicious activity</li>
+            </ul>
+            <button class="back-btn" onclick="showDashboard()">Back to Dashboard</button>
         </div>
 
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const logoutBtn = document.getElementById("logoutbtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+            const confirmLogout = confirm("Are you sure you want to logout?");
+            if (confirmLogout) {
+                localStorage.removeItem("token");
+                window.location.href = "/logout";
+            }
+        });
+    }
+});
+
+// Helper to hide all sections
+function hideAllSections() {
+    document.getElementById("dashboardSection").style.display = "none";
+    document.getElementById("aboutSection").style.display = "none";
+    document.getElementById("contactSection").style.display = "none";
+    document.getElementById("securitySection").style.display = "none";
+}
+
+// Show each section
+function showDashboard() {
+    hideAllSections();
+    document.getElementById("dashboardSection").style.display = "block";
+}
+function showAbout() {
+    hideAllSections();
+    document.getElementById("aboutSection").style.display = "block";
+}
+function showContact() {
+    hideAllSections();
+    document.getElementById("contactSection").style.display = "block";
+}
+function showSecurity() {
+    hideAllSections();
+    document.getElementById("securitySection").style.display = "block";
+}
+</script>
 
 </body>
 </html>
