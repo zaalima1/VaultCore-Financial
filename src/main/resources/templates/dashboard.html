@@ -1,137 +1,122 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>VaultCore Financial | Dashboard</title>
     <meta charset="UTF-8">
+    <title>VaultCore Financial | Dashboard</title>
 
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
             font-family: "Segoe UI", Arial, sans-serif;
         }
 
         body {
-            margin: 0;
-            background: #f8fafc;
-            color: #0f172a;
+            min-height: 100vh;
+
+            /* 🔹 Background image */
+            background-image: url("/images/dash.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
 
-        /* ================= HEADER ================= */
-        .topbar {
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 14px 28px;
+        /* ================= MAIN LAYOUT ================= */
+        .layout {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            min-height: 100vh;
+            background: rgba(246, 249, 252, 0.85); /* overlay */
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+        /* ================= SIDEBAR ================= */
+        .sidebar {
+            width: 240px;
             background: #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             color: white;
-            font-size: 18px;
+            padding: 24px 18px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
         }
 
-        .brand-text h2 {
-            margin: 0;
-            font-size: 18px;
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 32px;
+            font-size: 22px;
         }
 
-        .brand-text span {
-            font-size: 13px;
-            color: #64748b;
+        .menu {
+            list-style: none;
         }
 
-        .user-box {
-            text-align: right;
+        .menu li {
+            margin-bottom: 14px;
         }
 
-        .user-box span {
-            font-size: 13px;
-            color: #64748b;
-        }
-
-        .signout {
-            margin-left: 12px;
-            padding: 8px 14px;
+        .menu a {
+            display: block;
+            padding: 12px 14px;
+            text-decoration: none;
+            color: #cbd5f5;
             border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            background: white;
-            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu a:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .logout {
+            color: #f87171 !important;
         }
 
         /* ================= CONTENT ================= */
-        .container {
+        .main-content {
+            margin-left: 240px;
+            width: calc(100% - 240px);
             padding: 28px;
         }
 
-        .alert {
-            background: #ecfdf5;
-            border: 1px solid #86efac;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 26px;
-            color: #065f46;
+        /* ================= TOP BAR ================= */
+        .topbar {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 28px;
         }
 
+        .topbar h3 {
+            font-size: 18px;
+        }
+
+        /* ================= CARDS ================= */
         .card {
             background: white;
             border-radius: 16px;
-            padding: 22px;
+            padding: 24px;
             border: 1px solid #e2e8f0;
             margin-bottom: 28px;
         }
 
         .card h3 {
-            margin: 0 0 6px;
+            margin-bottom: 6px;
             font-size: 20px;
         }
 
         .subtitle {
             font-size: 14px;
             color: #64748b;
-            margin-bottom: 18px;
         }
 
-        /* ================= BALANCE ================= */
-        .balance-form input {
-            padding: 12px;
-            width: 260px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            margin-right: 10px;
-        }
-
-        .balance-form button {
-            padding: 12px 18px;
-            border-radius: 10px;
-            border: none;
-            background: #2563eb;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .balance-result {
-            margin-top: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #16a34a;
-        }
-
-        /* ================= INFO CARDS ================= */
+        /* ================= INFO GRID ================= */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -140,15 +125,14 @@
         }
 
         .info-box {
-            background: #ffffff;
+            background: white;
             border-radius: 14px;
-            padding: 18px;
+            padding: 20px;
             border: 1px solid #e2e8f0;
         }
 
         .info-box h4 {
-            margin: 0 0 6px;
-            font-size: 16px;
+            margin-bottom: 6px;
         }
 
         .info-box span {
@@ -156,122 +140,71 @@
             color: #64748b;
         }
 
-        /* ================= SECURITY TEST ================= */
-        .security-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-top: 20px;
-        }
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 900px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
 
-        .security-box {
-            padding: 18px;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
-            background: #ffffff;
-            text-align: center;
-        }
+            .sidebar {
+                width: 200px;
+            }
 
-        .security-box h4 {
-            margin: 10px 0 4px;
-        }
-
-        .security-box span {
-            font-size: 13px;
-            color: #64748b;
+            .main-content {
+                margin-left: 200px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
-<div class="topbar">
-    <div class="brand">
-        <div class="logo">🛡</div>
-        <div class="brand-text">
-            <h2>VaultCore Financial</h2>
-            <span>Immutable Ledger System</span>
-        </div>
-    </div>
+<div class="layout">
 
-    <div class="user-box">
-        <strong>Authorized User</strong><br>
-        <span>Account Access</span>
-        <button class="signout">Sign Out</button>
-    </div>
-</div>
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+        <h2>VaultCore</h2>
+        <ul class="menu">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Check Balance</a></li>
+            <li><a href="#">Send Money</a></li>
+            <li><a href="#">Transactions</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="/logout" class="logout">Logout</a></li>
+        </ul>
+    </aside>
 
-<!-- ================= CONTENT ================= -->
-<div class="container">
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-content">
 
-    <div class="alert">
-        <strong>Tamper-Proof System Active:</strong><br>
-        All ledger entries are cryptographically sealed and immutable.
-        Any unauthorized modification attempt will be blocked and logged.
-    </div>
-
-    <!-- ================= DASHBOARD ================= -->
-    <div class="card">
-        <h3>Dashboard</h3>
-        <p class="subtitle">Secure account overview</p>
-
-        <p th:if="${msg != null}" th:text="${msg}"></p>
-
-        <form class="balance-form" th:action="@{/balance}" method="get">
-            <input type="text" name="accountNumber" placeholder="Enter Account Number" required>
-            <button type="submit">Check Balance</button>
-        </form>
-
-        <div class="balance-result" th:if="${balance != null}">
-            ✅ Balance:
-            <span th:text="${balance}"></span>
+        <div class="topbar">
+            <h3>Welcome, User 👋</h3>
+            <span>Secure Banking Dashboard</span>
         </div>
 
-        <p th:if="${balanceMsg != null}" th:text="${balanceMsg}"></p>
-    </div>
-
-    <!-- ================= INFO ================= -->
-    <div class="info-grid">
-        <div class="info-box">
-            <h4>ACID Compliant</h4>
-            <span>Atomicity, Consistency, Isolation, Durability guaranteed</span>
+        <div class="card">
+            <h3>Dashboard Overview</h3>
+            <p class="subtitle">Manage your accounts and transactions securely</p>
         </div>
 
-        <div class="info-box">
-            <h4>Cryptographic Hash</h4>
-            <span>Each record sealed with SHA-256 checksum</span>
-        </div>
-
-        <div class="info-box">
-            <h4>Immutable Storage</h4>
-            <span>Write-once, read-many architecture enforced</span>
-        </div>
-    </div>
-
-    <!-- ================= SECURITY ================= -->
-    <div class="card">
-        <h3>Security Constraint Testing</h3>
-        <p class="subtitle">Simulate security violations to test system response</p>
-
-        <div class="security-grid">
-            <div class="security-box">
-                <h4>Data Manipulation</h4>
-                <span>Attempt to edit ledger</span>
+        <div class="info-grid">
+            <div class="info-box">
+                <h4>Account Balance</h4>
+                <span>View your current balance</span>
             </div>
 
-            <div class="security-box">
-                <h4>Unauthorized Access</h4>
-                <span>Invalid API request</span>
+            <div class="info-box">
+                <h4>Money Transfer</h4>
+                <span>Send money instantly</span>
             </div>
 
-            <div class="security-box">
-                <h4>Invalid Token</h4>
-                <span>Expired session</span>
+            <div class="info-box">
+                <h4>Security</h4>
+                <span>Protected with encryption</span>
             </div>
         </div>
-    </div>
 
+    </div>
 </div>
 
 </body>
