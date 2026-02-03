@@ -46,10 +46,11 @@ public class SecurityConfig {
                         "/login-page",
                         "/login",
                         "/verify-otp",
-                        "/resend-otp",     // ✅ FIX: REQUIRED
+                        "/resend-otp",     
                         "/dashboard-page",
                         "/admin/dashboard",
-                        "/favicon.ico"
+                        "/favicon.ico",
+                        "/transfer"
                 ).permitAll()
 
                 // ✅ STATIC RESOURCES

@@ -19,6 +19,7 @@ import VaultCore_Financial.service.BalanceService;
 
 
 @Controller
+
 public class ViewController {
 
     private final AuthService authService;

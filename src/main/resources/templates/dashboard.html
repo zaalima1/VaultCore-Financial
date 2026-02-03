@@ -1,278 +1,400 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>VaultCore Financial | Dashboard</title>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+<title>VaultCore Financial | Dashboard</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: "Segoe UI", Arial, sans-serif;
-        }
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
 
-        body {
-            margin: 0;
-            background: #f8fafc;
-            color: #0f172a;
-        }
+body{
+  background:#f5f7fb;
+  color:#0f172a;
+}
 
-        /* ================= HEADER ================= */
-        .topbar {
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 14px 28px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+/* ================= HEADER ================= */
+.header{
+  background:#fff;
+  padding:16px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #e5e7eb;
+}
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:700;
+}
 
-        .logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-        }
+.logo span{
+  width:38px;
+  height:38px;
+  background:#2563eb;
+  color:#fff;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-        .brand-text h2 {
-            margin: 0;
-            font-size: 18px;
-        }
+.profile{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
 
-        .brand-text span {
-            font-size: 13px;
-            color: #64748b;
-        }
+.avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#dbeafe;
+  color:#2563eb;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-        .user-box {
-            text-align: right;
-        }
+/* ================= CONTENT ================= */
+.container{
+  padding:32px 40px;
+}
 
-        .user-box span {
-            font-size: 13px;
-            color: #64748b;
-        }
+h1{
+  font-size:26px;
+  margin-bottom:6px;
+}
 
-        .signout {
-            margin-left: 12px;
-            padding: 8px 14px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            background: white;
-            cursor: pointer;
-        }
+.sub{
+  color:#64748b;
+  margin-bottom:26px;
+}
 
-        /* ================= CONTENT ================= */
-        .container {
-            padding: 28px;
-        }
+/* ================= ACCOUNT CARDS ================= */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
 
-        .alert {
-            background: #ecfdf5;
-            border: 1px solid #86efac;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 26px;
-            color: #065f46;
-        }
+.account-card{
+  padding:26px;
+  border-radius:20px;
+  color:#fff;
+}
 
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 22px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 28px;
-        }
+.blue{background:linear-gradient(135deg,#2563eb,#1e40af)}
+.green{background:linear-gradient(135deg,#16a34a,#15803d)}
+.purple{background:linear-gradient(135deg,#9333ea,#6b21a8)}
 
-        .card h3 {
-            margin: 0 0 6px;
-            font-size: 20px;
-        }
+.account-card h4{
+  font-weight:500;
+  margin-bottom:14px;
+}
 
-        .subtitle {
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 18px;
-        }
+.amount{
+  font-size:34px;
+  font-weight:700;
+}
 
-        /* ================= BALANCE ================= */
-        .balance-form input {
-            padding: 12px;
-            width: 260px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            margin-right: 10px;
-        }
+.mask{
+  margin-top:16px;
+  opacity:.9;
+}
 
-        .balance-form button {
-            padding: 12px 18px;
-            border-radius: 10px;
-            border: none;
-            background: #2563eb;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
+/* ================= QUICK ACTIONS ================= */
+.quick{
+  margin-top:34px;
+  background:#fff;
+  padding:26px;
+  border-radius:20px;
+}
 
-        .balance-result {
-            margin-top: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #16a34a;
-        }
+.actions{
+  margin-top:20px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  text-align:center;
+}
 
-        /* ================= INFO CARDS ================= */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-top: 24px;
-        }
+.actions a{
+  text-decoration:none;
+  color:inherit;
+  cursor:pointer;
+}
 
-        .info-box {
-            background: #ffffff;
-            border-radius: 14px;
-            padding: 18px;
-            border: 1px solid #e2e8f0;
-        }
+.icon{
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:auto;
+  font-weight:700;
+}
 
-        .info-box h4 {
-            margin: 0 0 6px;
-            font-size: 16px;
-        }
+.transfer{background:#e0e7ff;color:#2563eb}
+.pay{background:#dcfce7;color:#16a34a}
+.card{background:#f3e8ff;color:#9333ea}
+.analytics{background:#ffedd5;color:#ea580c}
 
-        .info-box span {
-            font-size: 13px;
-            color: #64748b;
-        }
+/* ================= GRID ================= */
+.grid{
+  margin-top:34px;
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:22px;
+}
 
-        /* ================= SECURITY TEST ================= */
-        .security-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-top: 20px;
-        }
+.box{
+  background:#fff;
+  padding:26px;
+  border-radius:20px;
+}
 
-        .security-box {
-            padding: 18px;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
-            background: #ffffff;
-            text-align: center;
-        }
+/* ================= TRANSACTIONS ================= */
+.tx{
+  display:flex;
+  justify-content:space-between;
+  padding:18px 0;
+  border-bottom:1px solid #e5e7eb;
+}
 
-        .security-box h4 {
-            margin: 10px 0 4px;
-        }
+.tx:last-child{border-bottom:none}
 
-        .security-box span {
-            font-size: 13px;
-            color: #64748b;
-        }
-    </style>
+.tx-left{
+  display:flex;
+  gap:14px;
+}
+
+.tx-icon{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.red{background:#fee2e2;color:#dc2626}
+.green{background:#dcfce7;color:#16a34a}
+
+.amount-pos{color:#16a34a;font-weight:600}
+.amount-neg{color:#dc2626;font-weight:600}
+
+/* ================= CARD ================= */
+.card-box{
+  background:linear-gradient(135deg,#020617,#1e293b);
+  color:#fff;
+  padding:22px;
+  border-radius:16px;
+  margin-bottom:18px;
+}
+
+.add-card{
+  border:2px dashed #cbd5e1;
+  padding:14px;
+  text-align:center;
+  border-radius:14px;
+  cursor:pointer;
+}
+
+/* ================= MODALS ================= */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.modal-box{
+  background:#fff;
+  width:360px;
+  padding:26px;
+  border-radius:16px;
+}
+
+.modal-box h3{margin-bottom:16px}
+
+.modal-box label{
+  display:block;
+  margin-top:14px;
+  font-size:14px;
+}
+
+.modal-box input,
+.modal-box select{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:10px;
+  border:1px solid #cbd5e1;
+}
+
+.modal-box button{
+  width:100%;
+  margin-top:18px;
+  padding:12px;
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+}
+
+.close{
+  display:block;
+  margin-top:14px;
+  text-align:center;
+  color:#64748b;
+  cursor:pointer;
+}
+</style>
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
-<div class="topbar">
-    <div class="brand">
-        <div class="logo">🛡</div>
-        <div class="brand-text">
-            <h2>VaultCore Financial</h2>
-            <span>Immutable Ledger System</span>
-        </div>
-    </div>
-
-    <div class="user-box">
-        <strong>Authorized User</strong><br>
-        <span>Account Access</span>
-        <button class="signout">Sign Out</button>
-    </div>
+<!-- HEADER -->
+<div class="header">
+  <div class="logo"><span>B</span> VaultCore</div>
+  <div class="profile">
+    <div class="avatar">JD</div>
+    <div><strong>Authorized User</strong><br><small>Account Access</small></div>
+  </div>
 </div>
 
-<!-- ================= CONTENT ================= -->
 <div class="container">
+<h1>Welcome back!</h1>
+<p class="sub">Here's what's happening with your accounts today.</p>
 
-    <div class="alert">
-        <strong>Tamper-Proof System Active:</strong><br>
-        All ledger entries are cryptographically sealed and immutable.
-        Any unauthorized modification attempt will be blocked and logged.
-    </div>
-
-    <!-- ================= DASHBOARD ================= -->
-    <div class="card">
-        <h3>Dashboard</h3>
-        <p class="subtitle">Secure account overview</p>
-
-        <p th:if="${msg != null}" th:text="${msg}"></p>
-
-        <form class="balance-form" th:action="@{/balance}" method="get">
-            <input type="text" name="accountNumber" placeholder="Enter Account Number" required>
-            <button type="submit">Check Balance</button>
-        </form>
-
-        <div class="balance-result" th:if="${balance != null}">
-            ✅ Balance:
-            <span th:text="${balance}"></span>
-        </div>
-
-        <p th:if="${balanceMsg != null}" th:text="${balanceMsg}"></p>
-    </div>
-
-    <!-- ================= INFO ================= -->
-    <div class="info-grid">
-        <div class="info-box">
-            <h4>ACID Compliant</h4>
-            <span>Atomicity, Consistency, Isolation, Durability guaranteed</span>
-        </div>
-
-        <div class="info-box">
-            <h4>Cryptographic Hash</h4>
-            <span>Each record sealed with SHA-256 checksum</span>
-        </div>
-
-        <div class="info-box">
-            <h4>Immutable Storage</h4>
-            <span>Write-once, read-many architecture enforced</span>
-        </div>
-    </div>
-
-    <!-- ================= SECURITY ================= -->
-    <div class="card">
-        <h3>Security Constraint Testing</h3>
-        <p class="subtitle">Simulate security violations to test system response</p>
-
-        <div class="security-grid">
-            <div class="security-box">
-                <h4>Data Manipulation</h4>
-                <span>Attempt to edit ledger</span>
-            </div>
-
-            <div class="security-box">
-                <h4>Unauthorized Access</h4>
-                <span>Invalid API request</span>
-            </div>
-
-            <div class="security-box">
-                <h4>Invalid Token</h4>
-                <span>Expired session</span>
-            </div>
-        </div>
-    </div>
-
+<div class="cards">
+  <div class="account-card blue">
+    <h4>Checking Account</h4>
+    <div class="amount" th:text="${balance}">$12,458.50</div>
+    <div class="mask">**** **** **** 4829</div>
+  </div>
+  <div class="account-card green">
+    <h4>Savings Account</h4>
+    <div class="amount">$35,720.00</div>
+    <div class="mask">**** **** **** 6721</div>
+  </div>
+  <div class="account-card purple">
+    <h4>Credit Card</h4>
+    <div class="amount">$2,340.80</div>
+    <div class="mask">**** **** **** 9102</div>
+  </div>
 </div>
+
+<!-- QUICK ACTIONS -->
+<div class="quick">
+  <h3>Quick Actions</h3>
+  <div class="actions">
+
+    <!-- TRANSFER (UNCHANGED) -->
+	<a href="/transfer" th:href="@{/transfer}">
+	  <div>
+	    <div class="icon transfer">↔</div>
+	    Transfer
+	  </div>
+	</a>
+
+
+    <a onclick="openModal('payModal')">
+      <div>
+        <div class="icon pay">$</div>
+        Pay Bills
+      </div>
+    </a>
+
+    <a onclick="openModal('cardModal')">
+      <div>
+        <div class="icon card">💳</div>
+        Cards
+      </div>
+    </a>
+
+    <a onclick="openModal('analyticsModal')">
+      <div>
+        <div class="icon analytics">📊</div>
+        Analytics
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<div class="grid">
+<div class="box">
+  <h3>Recent Transactions</h3>
+  <div class="tx"><div class="tx-left"><div class="tx-icon red">🛒</div>Amazon Purchase</div><div class="amount-neg">-$85.40</div></div>
+  <div class="tx"><div class="tx-left"><div class="tx-icon green">+</div>Salary Deposit</div><div class="amount-pos">+$4,500.00</div></div>
+</div>
+
+<div>
+  <div class="box">
+    <h3>My Cards</h3>
+    <div class="card-box">Debit Card<br>•••• 4829<br><br>Balance<br><strong>$12,458</strong></div>
+    <div class="add-card" onclick="openModal('cardModal')">+ Add New Card</div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- PAY BILLS MODAL -->
+<div class="modal" id="payModal">
+  <div class="modal-box">
+    <h3>Pay Bills</h3>
+    <label>Bill Type</label>
+    <select>
+      <option>Electricity</option>
+      <option>Internet</option>
+      <option>Mobile</option>
+    </select>
+    <label>Amount</label>
+    <input type="number">
+    <button onclick="closeModal('payModal')">Pay</button>
+    <span class="close" onclick="closeModal('payModal')">Cancel</span>
+  </div>
+</div>
+
+<!-- CARD MODAL -->
+<div class="modal" id="cardModal">
+  <div class="modal-box">
+    <h3>Add Card</h3>
+    <label>Card Number</label>
+    <input maxlength="16">
+    <button onclick="closeModal('cardModal')">Add</button>
+    <span class="close" onclick="closeModal('cardModal')">Cancel</span>
+  </div>
+</div>
+
+<!-- ANALYTICS MODAL -->
+<div class="modal" id="analyticsModal">
+  <div class="modal-box">
+    <h3>Monthly Analytics</h3>
+    <p><strong>Income:</strong> $4,500</p>
+    <p><strong>Expenses:</strong> $1,645</p>
+    <div class="bar"><div class="fill blue-bar" style="width:70%"></div></div>
+    <span class="close" onclick="closeModal('analyticsModal')">Close</span>
+  </div>
+</div>
+
+<script>
+function openModal(id){document.getElementById(id).style.display="flex";}
+function closeModal(id){document.getElementById(id).style.display="none";}
+</script>
 
 </body>
 </html>
