@@ -1,41 +1,44 @@
 package VaultCore_Financial.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtService jwtService) throws Exception {
 
         http
-            // ❌ Disable CSRF for simplicity (ok for now)
+            // ✅ Disable CSRF (required for form POST + JWT)
             .csrf(csrf -> csrf.disable())
+            .cors(withDefaults())
 
-            // 🔓 Authorization rules
+            // ⚠️ Stateless (works for now with your flow)
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ STATIC RESOURCES (VERY IMPORTANT)
-                .requestMatchers(
-                        "/css/**",
-                        "/js/**",
-                        "/images/**",
-                        "/webjars/**",
-                        "/favicon.ico"
-                ).permitAll()
-
-                // ✅ PUBLIC PAGES
+                // ✅ PUBLIC AUTH & UI ROUTES
                 .requestMatchers(
                         "/",
                         "/register-page",
@@ -43,34 +46,35 @@ public class SecurityConfig {
                         "/login-page",
                         "/login",
                         "/verify-otp",
-                        "/resend-otp"
+                        "/resend-otp",     // ✅ FIX: REQUIRED
+                        "/dashboard-page",
+                        "/admin/dashboard",
+                        "/favicon.ico"
                 ).permitAll()
 
-                // 🔒 Everything else secured
+                // ✅ STATIC RESOURCES
+                .requestMatchers(
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/webjars/**"
+                ).permitAll()
+
+                // 🔒 EVERYTHING ELSE
                 .anyRequest().authenticated()
             )
 
-            // ✅ Custom login page
-            .formLogin(form -> form
-                .loginPage("/login-page")
-                .defaultSuccessUrl("/dashboard-page", true)
-                .permitAll()
-            )
-
-            // ✅ Logout config
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login-page")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
+            // ✅ JWT FILTER
+            .addFilterBefore(
+                new JwtAuthFilter(jwtService),
+                UsernamePasswordAuthenticationFilter.class
             );
 
         return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
+    AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
