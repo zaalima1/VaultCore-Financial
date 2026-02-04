@@ -5,395 +5,283 @@
 <title>VaultCore Financial | Dashboard</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
-}
-
+/* ===== BASE DASHBOARD ===== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial}
 body{
-  background:#f5f7fb;
-  color:#0f172a;
+    min-height:100vh;
+    background:url("/images/dash.jpg") center/cover fixed no-repeat;
 }
-
-/* ================= HEADER ================= */
-.header{
-  background:#fff;
-  padding:16px 40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid #e5e7eb;
+.layout{display:flex;min-height:100vh;background:rgba(246,249,252,.88)}
+.sidebar{
+    width:240px;background:#0f172a;color:#fff;
+    padding:24px 18px;position:fixed;top:0;bottom:0
 }
-
-.logo{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  font-weight:700;
+.sidebar h2{text-align:center;margin-bottom:32px}
+.menu{list-style:none}
+.menu li{margin-bottom:14px}
+.menu a{
+    display:block;padding:12px 14px;border-radius:10px;
+    color:#cbd5f5;text-decoration:none
 }
+.menu a:hover{background:#1e293b;color:#fff}
+.logout{color:#f87171!important}
 
-.logo span{
-  width:38px;
-  height:38px;
-  background:#2563eb;
-  color:#fff;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.main-content{
+    margin-left:240px;width:calc(100% - 240px);padding:28px
 }
-
-.profile{
-  display:flex;
-  align-items:center;
-  gap:14px;
+.card{
+    background:#fff;border-radius:16px;padding:24px;
+    border:1px solid #e2e8f0;margin-bottom:28px
 }
-
-.avatar{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:#dbeafe;
-  color:#2563eb;
-  font-weight:600;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.subtitle{font-size:14px;color:#64748b}
+.info-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:18px;margin-top:24px
 }
-
-/* ================= CONTENT ================= */
-.container{
-  padding:32px 40px;
+.info-box{
+    padding:20px;border-radius:14px;
+    border:1px solid #e2e8f0;background:#fff
 }
-
-h1{
-  font-size:26px;
-  margin-bottom:6px;
+.top-nav{
+    background:#fff;border-radius:14px;padding:12px 20px;
+    border:1px solid #e2e8f0;
+    display:flex;justify-content:flex-end;gap:14px;margin-bottom:20px
 }
-
-.sub{
-  color:#64748b;
-  margin-bottom:26px;
+.top-nav button{
+    padding:8px 16px;border-radius:10px;
+    border:1px solid #2563eb;background:transparent;
+    color:#2563eb;font-weight:600;cursor:pointer
 }
+.top-nav button:hover{background:#2563eb;color:#fff}
 
-/* ================= ACCOUNT CARDS ================= */
-.cards{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:22px;
+/* ===== SEND MONEY (PREMIUM) ===== */
+.hidden{display:none}
+.send-wrapper{
+    max-width:820px;margin:auto;
+    background:linear-gradient(135deg,#eef2ff,#f8fbff);
+    border-radius:22px;padding:28px
 }
-
-.account-card{
-  padding:26px;
-  border-radius:20px;
-  color:#fff;
+.send-header{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:22px
 }
-
-.blue{background:linear-gradient(135deg,#2563eb,#1e40af)}
-.green{background:linear-gradient(135deg,#16a34a,#15803d)}
-.purple{background:linear-gradient(135deg,#9333ea,#6b21a8)}
-
-.account-card h4{
-  font-weight:500;
-  margin-bottom:14px;
+.send-header h2{font-size:26px}
+.secure-pill{
+    background:#dcfce7;color:#15803d;
+    padding:6px 14px;border-radius:999px;
+    font-size:12px;font-weight:600
 }
-
-.amount{
-  font-size:34px;
-  font-weight:700;
+.stepper{display:flex;align-items:center;margin:26px 0}
+.step-dot{
+    width:42px;height:42px;border-radius:50%;
+    background:#e5e7eb;display:flex;
+    align-items:center;justify-content:center;font-weight:700
 }
-
-.mask{
-  margin-top:16px;
-  opacity:.9;
+.step-dot.active{
+    background:linear-gradient(135deg,#6366f1,#4f46e5);
+    color:#fff;box-shadow:0 0 0 6px rgba(99,102,241,.15)
 }
-
-/* ================= QUICK ACTIONS ================= */
-.quick{
-  margin-top:34px;
-  background:#fff;
-  padding:26px;
-  border-radius:20px;
+.step-line{flex:1;height:4px;background:#e5e7eb}
+.step-line.active{
+    background:linear-gradient(90deg,#6366f1,#4f46e5)
 }
-
-.actions{
-  margin-top:20px;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  text-align:center;
+.inner-card{
+    background:#fff;border-radius:18px;
+    padding:26px;box-shadow:0 12px 30px rgba(0,0,0,.08)
 }
-
-.actions a{
-  text-decoration:none;
-  color:inherit;
-  cursor:pointer;
+.field{margin-bottom:18px}
+.field label{font-weight:600;font-size:14px}
+.field input,.field select{
+    width:100%;padding:14px;margin-top:6px;
+    border-radius:12px;border:1px solid #e5e7eb
 }
-
-.icon{
-  width:54px;
-  height:54px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:auto;
-  font-weight:700;
+.amount-pills{display:flex;gap:12px;margin-top:12px}
+.amount-pills button{
+    flex:1;padding:12px;border-radius:14px;
+    border:1px solid #e5e7eb;
+    background:#f8fafc;font-weight:600;cursor:pointer
 }
-
-.transfer{background:#e0e7ff;color:#2563eb}
-.pay{background:#dcfce7;color:#16a34a}
-.card{background:#f3e8ff;color:#9333ea}
-.analytics{background:#ffedd5;color:#ea580c}
-
-/* ================= GRID ================= */
-.grid{
-  margin-top:34px;
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:22px;
+.amount-pills button:hover{
+    background:#eef2ff;border-color:#6366f1
 }
-
-.box{
-  background:#fff;
-  padding:26px;
-  border-radius:20px;
+.primary-btn{
+    width:100%;padding:16px;margin-top:10px;
+    border-radius:14px;border:none;
+    background:linear-gradient(135deg,#6366f1,#4f46e5);
+    color:#fff;font-weight:700;font-size:15px;cursor:pointer
 }
-
-/* ================= TRANSACTIONS ================= */
-.tx{
-  display:flex;
-  justify-content:space-between;
-  padding:18px 0;
-  border-bottom:1px solid #e5e7eb;
+.summary-box{
+    background:#eef2ff;border-radius:16px;padding:20px
 }
-
-.tx:last-child{border-bottom:none}
-
-.tx-left{
-  display:flex;
-  gap:14px;
+.summary-box div{
+    display:flex;justify-content:space-between;margin-bottom:10px
 }
-
-.tx-icon{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.red{background:#fee2e2;color:#dc2626}
-.green{background:#dcfce7;color:#16a34a}
-
-.amount-pos{color:#16a34a;font-weight:600}
-.amount-neg{color:#dc2626;font-weight:600}
-
-/* ================= CARD ================= */
-.card-box{
-  background:linear-gradient(135deg,#020617,#1e293b);
-  color:#fff;
-  padding:22px;
-  border-radius:16px;
-  margin-bottom:18px;
-}
-
-.add-card{
-  border:2px dashed #cbd5e1;
-  padding:14px;
-  text-align:center;
-  border-radius:14px;
-  cursor:pointer;
-}
-
-/* ================= MODALS ================= */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(15,23,42,.55);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-}
-
-.modal-box{
-  background:#fff;
-  width:360px;
-  padding:26px;
-  border-radius:16px;
-}
-
-.modal-box h3{margin-bottom:16px}
-
-.modal-box label{
-  display:block;
-  margin-top:14px;
-  font-size:14px;
-}
-
-.modal-box input,
-.modal-box select{
-  width:100%;
-  padding:10px;
-  margin-top:6px;
-  border-radius:10px;
-  border:1px solid #cbd5e1;
-}
-
-.modal-box button{
-  width:100%;
-  margin-top:18px;
-  padding:12px;
-  background:#2563eb;
-  color:#fff;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-}
-
-.close{
-  display:block;
-  margin-top:14px;
-  text-align:center;
-  color:#64748b;
-  cursor:pointer;
+.success{text-align:center}
+.success-icon{
+    width:96px;height:96px;border-radius:50%;
+    background:#dcfce7;color:#16a34a;
+    display:flex;align-items:center;justify-content:center;
+    font-size:46px;margin:0 auto 16px
 }
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="logo"><span>B</span> VaultCore</div>
-  <div class="profile">
-    <div class="avatar">JD</div>
-    <div><strong>Authorized User</strong><br><small>Account Access</small></div>
-  </div>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <h2>VaultCore</h2>
+    <ul class="menu">
+        <li><a href="#" onclick="showDashboard()">Dashboard</a></li>
+        <li><a href="#" onclick="showSendMoney()">Send Money</a></li>
+        <li><a th:href="@{/logout}" class="logout">Logout</a></li>
+    </ul>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+<marquee>
+    🔔 Welcome,
+    <span th:text="${username} ?: 'User'"></span>
+    | Secure Banking with VaultCore
+</marquee>
+
+<div class="top-nav">
+    <button onclick="showDashboard()">Home</button>
 </div>
 
-<div class="container">
-<h1>Welcome back!</h1>
-<p class="sub">Here's what's happening with your accounts today.</p>
+<!-- DASHBOARD -->
+<div id="dashboardSection" class="card">
+    <h3>Dashboard Overview</h3>
+    <p class="subtitle">Manage your accounts securely</p>
 
-<div class="cards">
-  <div class="account-card blue">
-    <h4>Checking Account</h4>
-    <div class="amount" th:text="${balance}">$12,458.50</div>
-    <div class="mask">**** **** **** 4829</div>
-  </div>
-  <div class="account-card green">
-    <h4>Savings Account</h4>
-    <div class="amount">$35,720.00</div>
-    <div class="mask">**** **** **** 6721</div>
-  </div>
-  <div class="account-card purple">
-    <h4>Credit Card</h4>
-    <div class="amount">$2,340.80</div>
-    <div class="mask">**** **** **** 9102</div>
-  </div>
+    <div class="info-grid">
+        <div class="info-box">
+            Balance:
+            <strong th:text="'₹' + ${balance} ?: '₹45,000'"></strong>
+        </div>
+        <div class="info-box">Money Transfer</div>
+        <div class="info-box">Security</div>
+    </div>
 </div>
 
-<!-- QUICK ACTIONS -->
-<div class="quick">
-  <h3>Quick Actions</h3>
-  <div class="actions">
+<!-- SEND MONEY -->
+<div id="sendMoneySection" class="card hidden">
 
-    <!-- TRANSFER (UNCHANGED) -->
-	<a href="/transfer" th:href="@{/transfer}">
-	  <div>
-	    <div class="icon transfer">↔</div>
-	    Transfer
-	  </div>
-	</a>
+<div class="send-wrapper">
 
-
-    <a onclick="openModal('payModal')">
-      <div>
-        <div class="icon pay">$</div>
-        Pay Bills
-      </div>
-    </a>
-
-    <a onclick="openModal('cardModal')">
-      <div>
-        <div class="icon card">💳</div>
-        Cards
-      </div>
-    </a>
-
-    <a onclick="openModal('analyticsModal')">
-      <div>
-        <div class="icon analytics">📊</div>
-        Analytics
-      </div>
-    </a>
-
-  </div>
+<div class="send-header">
+    <h2>Send Money</h2>
+    <span class="secure-pill">🔒 ACID Compliant</span>
 </div>
 
-<div class="grid">
-<div class="box">
-  <h3>Recent Transactions</h3>
-  <div class="tx"><div class="tx-left"><div class="tx-icon red">🛒</div>Amazon Purchase</div><div class="amount-neg">-$85.40</div></div>
-  <div class="tx"><div class="tx-left"><div class="tx-icon green">+</div>Salary Deposit</div><div class="amount-pos">+$4,500.00</div></div>
+<div class="stepper">
+    <div id="s1" class="step-dot active">1</div>
+    <div id="l1" class="step-line active"></div>
+    <div id="s2" class="step-dot">2</div>
+    <div id="l2" class="step-line"></div>
+    <div id="s3" class="step-dot">3</div>
 </div>
 
-<div>
-  <div class="box">
-    <h3>My Cards</h3>
-    <div class="card-box">Debit Card<br>•••• 4829<br><br>Balance<br><strong>$12,458</strong></div>
-    <div class="add-card" onclick="openModal('cardModal')">+ Add New Card</div>
-  </div>
+<!-- STEP 1 -->
+<div id="step1" class="inner-card">
+    <h3>Transfer Details</h3><br>
+
+    <div class="field">
+        <label>From Account</label>
+        <select id="fromAcc">
+            <option value="">Select account</option>
+            <option th:each="acc : ${accounts}"
+                    th:value="${acc.number}"
+                    th:text="'Current • ****' + ${acc.last4}">
+            </option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>To Account / UPI</label>
+        <input id="toAcc">
+    </div>
+
+    <div class="field">
+        <label>Amount</label>
+        <input id="amount" type="number">
+    </div>
+
+    <div class="amount-pills">
+        <button type="button" onclick="setAmt(1000)">₹1,000</button>
+        <button type="button" onclick="setAmt(5000)">₹5,000</button>
+        <button type="button" onclick="setAmt(10000)">₹10,000</button>
+    </div>
+
+    <button class="primary-btn" onclick="nextStep()">Review Transfer</button>
 </div>
+
+<!-- STEP 2 -->
+<div id="step2" class="inner-card hidden">
+    <h3>Confirm Transfer</h3><br>
+
+    <div class="summary-box">
+        <div><span>To</span><strong id="cTo"></strong></div>
+        <div><span>Amount</span><strong id="cAmt"></strong></div>
+        <div><span>Fee</span><strong>₹10</strong></div>
+        <hr>
+        <div><span>Total Debit</span><strong id="cTotal"></strong></div>
+    </div>
+
+    <button class="primary-btn" onclick="confirmTransfer()">Confirm & Send</button>
+</div>
+
+<!-- STEP 3 -->
+<div id="step3" class="inner-card hidden success">
+    <div class="success-icon">✓</div>
+    <h3>Transfer Successful</h3>
+    <p id="txnId"></p>
+    <button class="primary-btn" onclick="showDashboard()">Go to Dashboard</button>
+</div>
+
 </div>
 </div>
 
-<!-- PAY BILLS MODAL -->
-<div class="modal" id="payModal">
-  <div class="modal-box">
-    <h3>Pay Bills</h3>
-    <label>Bill Type</label>
-    <select>
-      <option>Electricity</option>
-      <option>Internet</option>
-      <option>Mobile</option>
-    </select>
-    <label>Amount</label>
-    <input type="number">
-    <button onclick="closeModal('payModal')">Pay</button>
-    <span class="close" onclick="closeModal('payModal')">Cancel</span>
-  </div>
 </div>
-
-<!-- CARD MODAL -->
-<div class="modal" id="cardModal">
-  <div class="modal-box">
-    <h3>Add Card</h3>
-    <label>Card Number</label>
-    <input maxlength="16">
-    <button onclick="closeModal('cardModal')">Add</button>
-    <span class="close" onclick="closeModal('cardModal')">Cancel</span>
-  </div>
-</div>
-
-<!-- ANALYTICS MODAL -->
-<div class="modal" id="analyticsModal">
-  <div class="modal-box">
-    <h3>Monthly Analytics</h3>
-    <p><strong>Income:</strong> $4,500</p>
-    <p><strong>Expenses:</strong> $1,645</p>
-    <div class="bar"><div class="fill blue-bar" style="width:70%"></div></div>
-    <span class="close" onclick="closeModal('analyticsModal')">Close</span>
-  </div>
 </div>
 
 <script>
-function openModal(id){document.getElementById(id).style.display="flex";}
-function closeModal(id){document.getElementById(id).style.display="none";}
+const fee = 10;
+
+function hideAll(){
+    dashboardSection.classList.add("hidden");
+    sendMoneySection.classList.add("hidden");
+}
+function showDashboard(){
+    hideAll();
+    dashboardSection.classList.remove("hidden");
+}
+function showSendMoney(){
+    hideAll();
+    sendMoneySection.classList.remove("hidden");
+}
+
+function setAmt(v){ amount.value = v }
+
+function nextStep(){
+    step1.classList.add("hidden");
+    step2.classList.remove("hidden");
+    s2.classList.add("active"); l2.classList.add("active");
+    cTo.innerText = toAcc.value;
+    cAmt.innerText = "₹" + amount.value;
+    cTotal.innerText = "₹" + (Number(amount.value) + fee);
+}
+
+function confirmTransfer(){
+    step2.classList.add("hidden");
+    step3.classList.remove("hidden");
+    s3.classList.add("active");
+    txnId.innerText = "Transaction ID: TXN" + Math.floor(Math.random()*100000000);
+}
 </script>
 
 </body>

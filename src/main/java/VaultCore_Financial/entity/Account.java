@@ -20,6 +20,12 @@ public class Account {
 
     @Column(name = "account_number", nullable = false, unique = true)
     private String accountNumber;
+    @Column(name = "mobile_num", nullable = false, unique = true)
+    private String mobilenum;
+    @Column(name = "date_of_birth ", nullable = false, unique = true)
+    private String dateofbirth;
+    @Column(name = "Gender", nullable = false, unique = true)
+    private String Gender;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
@@ -30,12 +36,46 @@ public class Account {
 		
 	}
 
-	public Account(Long id, User user, String accountNumber, Instant createdAt) {
+
+
+	
+	public Account(Long id, User user, String accountNumber, String mobilenum, String dateofbirth, String gender,
+			Instant createdAt) {
 		
 		this.id = id;
 		this.user = user;
 		this.accountNumber = accountNumber;
+		this.mobilenum = mobilenum;
+		this.dateofbirth = dateofbirth;
+		Gender = gender;
 		this.createdAt = createdAt;
+	}
+
+
+
+
+	public String getMobilenum() {
+		return mobilenum;
+	}
+
+	public void setMobilenum(String mobilenum) {
+		this.mobilenum = mobilenum;
+	}
+
+	public String getDateofbirth() {
+		return dateofbirth;
+	}
+
+	public void setDateofbirth(String dateofbirth) {
+		this.dateofbirth = dateofbirth;
+	}
+
+	public String getGender() {
+		return Gender;
+	}
+
+	public void setGender(String gender) {
+		Gender = gender;
 	}
 
 	public Long getId() {
