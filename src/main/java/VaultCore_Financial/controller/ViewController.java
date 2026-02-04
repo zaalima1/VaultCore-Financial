@@ -78,9 +78,7 @@ public class ViewController {
         return "login";
     }
 
-    /**
-     * STEP 1 → Validate email & password and send OTP
-     */
+    
     @PostMapping("/login")
     public String login(@ModelAttribute LoginRequest request, Model model) {
 
@@ -116,12 +114,12 @@ public class ViewController {
                             List.of(() -> "ROLE_" + res.getRole())
                     );
 
-            // ✅ Set authentication
+        
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authentication);
             SecurityContextHolder.setContext(context);
 
-            // 🔥 THIS LINE IS THE REAL FIX
+ 
             HttpSession session = request.getSession(true);
             session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
