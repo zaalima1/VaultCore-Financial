@@ -10,6 +10,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import VaultCore_Financial.dto.AuthResponse;
 import VaultCore_Financial.dto.LoginRequest;
 import VaultCore_Financial.entity.User;
+import VaultCore_Financial.repo.LedgerRepository;
 import VaultCore_Financial.repo.UserRepository;
 import VaultCore_Financial.service.AuthService;
 import VaultCore_Financial.service.BalanceService;
@@ -27,6 +31,8 @@ import jakarta.servlet.http.HttpSession;
 
 public class ViewController {
 
+    private final LedgerRepository ledgerRepository;
+
     private final AuthService authService;
     private final BalanceService balanceService;
     private final UserRepository userRepository;
@@ -35,11 +41,12 @@ public class ViewController {
     public ViewController(AuthService authService,
                           BalanceService balanceService,
                           UserRepository userRepository,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder, LedgerRepository ledgerRepository) {
         this.authService = authService;
         this.balanceService = balanceService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.ledgerRepository = ledgerRepository;
     }
 
     // ================= REGISTER =================
@@ -165,12 +172,14 @@ public class ViewController {
     public String dashboardPages() {
         return "dashboard";
     }
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "Logged out";
+    }
+
 
    
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("Logged out successfully");
-    }
+    
 }

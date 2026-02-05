@@ -136,7 +136,8 @@ body{
     <ul class="menu">
         <li><a href="#" onclick="showDashboard()">Dashboard</a></li>
         <li><a href="#" onclick="showSendMoney()">Send Money</a></li>
-        <li><a th:href="@{/logout}" class="logout">Logout</a></li>
+  <li><a href="#" onclick="logout()" class="logout">Logout</a></li>
+  
     </ul>
 </aside>
 
@@ -282,6 +283,24 @@ function confirmTransfer(){
     s3.classList.add("active");
     txnId.innerText = "Transaction ID: TXN" + Math.floor(Math.random()*100000000);
 }
+function logout() {
+    const confirmLogout = confirm("Are you sure you want to logout?");
+
+    if (!confirmLogout) {
+        return; // user clicked Cancel
+    }
+
+    // remove JWT from localStorage
+    localStorage.removeItem("jwt");
+
+    // call backend to clear cookie
+    fetch("/logout", {
+        method: "POST"
+    }).finally(() => {
+        window.location.href = "/login-page";
+    });
+}
+
 </script>
 
 </body>

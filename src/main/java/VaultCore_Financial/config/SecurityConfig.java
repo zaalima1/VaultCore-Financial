@@ -45,6 +45,7 @@ public class SecurityConfig {
                         "/register",
                         "/login-page",
                         "/login",
+                        "/logout",       
                         "/verify-otp",
                         "/resend-otp",     // ✅ FIX: REQUIRED
                         "/dashboard-page",
