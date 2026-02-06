@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,30 +13,37 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import VaultCore_Financial.dto.AuthResponse;
 import VaultCore_Financial.dto.LoginRequest;
 import VaultCore_Financial.entity.User;
 import VaultCore_Financial.repo.UserRepository;
 import VaultCore_Financial.service.AuthService;
 import VaultCore_Financial.service.BalanceService;
+//import VaultCore_Financial.service.TransactionService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-
 public class ViewController {
 
     private final AuthService authService;
     private final BalanceService balanceService;
+//    private final TransactionService transactionService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public ViewController(AuthService authService,
-                          BalanceService balanceService,
-                          UserRepository userRepository,
-                          PasswordEncoder passwordEncoder) {
+    public ViewController(
+            AuthService authService,
+            BalanceService balanceService,
+//            TransactionService transactionService,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder
+    ) {
         this.authService = authService;
         this.balanceService = balanceService;
+//        this.transactionService = transactionService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -59,12 +65,9 @@ public class ViewController {
         }
 
         user.setCreatedAt(Instant.now());
-
-        if (user.getRole() == null || user.getRole().isEmpty()) {
-            user.setRole("USER");
-        }
-
+        user.setRole(user.getRole() == null ? "USER" : user.getRole());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         userRepository.save(user);
 
         ra.addFlashAttribute("msg", "Registration Success — Please Login");
@@ -79,21 +82,15 @@ public class ViewController {
         return "login";
     }
 
-    /**
-     * STEP 1 → Validate email & password and send OTP
-     */
     @PostMapping("/login")
     public String login(@ModelAttribute LoginRequest request, Model model) {
 
         try {
             authService.initiateLogin(request);
-
             model.addAttribute("otpStage", true);
             model.addAttribute("email", request.getEmail());
             model.addAttribute("msg", "OTP sent successfully");
-
             return "login";
-
         } catch (Exception e) {
             model.addAttribute("msg", "Login Failed ❌ " + e.getMessage());
             return "login";
@@ -101,28 +98,28 @@ public class ViewController {
     }
 
     @PostMapping("/verify-otp")
-    public String verifyOtp(@RequestParam String email,
-                            @RequestParam String otp,
-                            HttpServletRequest request,
-                            RedirectAttributes ra,
-                            Model model) {
+    public String verifyOtp(
+            @RequestParam String email,
+            @RequestParam String otp,
+            HttpServletRequest request,
+            RedirectAttributes ra,
+            Model model
+    ) {
 
         try {
             AuthResponse res = authService.verifyOtp(email, otp);
 
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            email,
-                            null,
-                            List.of(() -> "ROLE_" + res.getRole())
-                    );
+                new UsernamePasswordAuthenticationToken(
+                    email,
+                    null,
+                    List.of(() -> "ROLE_" + res.getRole())
+                );
 
-            // ✅ Set authentication
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authentication);
             SecurityContextHolder.setContext(context);
 
-            // 🔥 THIS LINE IS THE REAL FIX
             HttpSession session = request.getSession(true);
             session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
@@ -130,7 +127,13 @@ public class ViewController {
             );
 
             ra.addFlashAttribute("msg", "Login Successful ✅");
-            return "redirect:/dashboard-page";
+
+            // ✅ ROLE-BASED REDIRECT (THIS IS THE FIX)
+            if ("ADMIN".equalsIgnoreCase(res.getRole())) {
+                return "redirect:/admin/dashboard";
+            } else {
+                return "redirect:/dashboard-page";
+            }
 
         } catch (Exception e) {
             model.addAttribute("otpStage", true);
@@ -140,19 +143,15 @@ public class ViewController {
         }
     }
 
-
     @PostMapping("/resend-otp")
     public String resendOtp(@RequestParam String email, Model model) {
 
         try {
             authService.resendOtp(email);
-
             model.addAttribute("otpStage", true);
             model.addAttribute("email", email);
-            model.addAttribute("msg", "A new OTP has been sent to your email.");
-
+            model.addAttribute("msg", "A new OTP has been sent.");
             return "login";
-
         } catch (Exception e) {
             model.addAttribute("otpStage", true);
             model.addAttribute("email", email);
@@ -164,15 +163,20 @@ public class ViewController {
     // ================= DASHBOARD =================
 
     @GetMapping("/dashboard-page")
-    public String dashboardPages() {
+    public String dashboard(Model model) {
+
+        String email = SecurityContextHolder.getContext()
+                                           .getAuthentication()
+                                           .getName();
+
+        BigDecimal balance = balanceService.getBalance(email);
+
+        model.addAttribute("balance", balance);
+//        model.addAttribute(
+//            "transactions",
+//            transactionService.getUserTransactions(email)
+       
+
         return "dashboard";
-    }
-
-   
-
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("Logged out successfully");
     }
 }

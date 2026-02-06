@@ -3,6 +3,7 @@ package VaultCore_Financial.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -134,6 +135,19 @@ public class Account {
 	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
 	}
+
+
+
+
+	public BigDecimal getBalance() {
+		// TODO Auto-generated method stub
+		return getBalance();
+	}
+
+
+
+
+
     
     
 }

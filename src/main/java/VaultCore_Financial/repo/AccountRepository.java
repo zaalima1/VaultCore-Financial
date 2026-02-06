@@ -8,5 +8,7 @@ import VaultCore_Financial.entity.Account;
 import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    Optional<Account> findByAccountNumber(String accountNumber);
+    Optional<Account> findByAccountNumber(String email);
+
+	Account findByUserEmail(String email);
 }

@@ -4,13 +4,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -19,52 +16,61 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    BCryptPasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtService jwtService) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtService jwtService
+    ) throws Exception {
 
         http
-            // ✅ Disable CSRF (required for form POST + JWT)
+            // ✅ Disable CSRF for simplicity (OK for now)
             .csrf(csrf -> csrf.disable())
             .cors(withDefaults())
 
-            // ⚠️ Stateless (works for now with your flow)
+            // ✅ STATEFUL SESSION (REQUIRED)
             .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             )
 
+            // ✅ AUTH RULES
             .authorizeHttpRequests(auth -> auth
-
-                // ✅ PUBLIC AUTH & UI ROUTES
                 .requestMatchers(
-                        "/",
-                        "/register-page",
-                        "/register",
-                        "/login-page",
-                        "/login",
-                        "/verify-otp",
-                        "/resend-otp",     // ✅ FIX: REQUIRED
-                        "/dashboard-page",
-                        "/admin/dashboard",
-                        "/favicon.ico"
+                    "/",
+                    "/register-page",
+                    "/register",
+                    "/login-page",
+                    "/login",
+                    "/verify-otp",
+                    "/resend-otp",
+                    "/favicon.ico",
+                    "/css/**",
+                    "/js/**",
+                    "/images/**",
+                    "/webjars/**"
                 ).permitAll()
 
-                // ✅ STATIC RESOURCES
-                .requestMatchers(
-                        "/css/**",
-                        "/js/**",
-                        "/images/**",
-                        "/webjars/**"
-                ).permitAll()
+                // 🔒 Protected pages
+//                .requestMatchers("/dashboard-page", "/admin/**")
+//                .authenticated()
 
-                // 🔒 EVERYTHING ELSE
                 .anyRequest().authenticated()
             )
 
-            // ✅ JWT FILTER
+            // ✅ LOGOUT CONFIG (THIS FIXES YOUR ISSUE)
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login-page?logout")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            )
+
+            // ✅ JWT FILTER (OPTIONAL FOR API CALLS)
             .addFilterBefore(
                 new JwtAuthFilter(jwtService),
                 UsernamePasswordAuthenticationFilter.class
@@ -74,8 +80,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config
+    ) throws Exception {
         return config.getAuthenticationManager();
     }
 }
