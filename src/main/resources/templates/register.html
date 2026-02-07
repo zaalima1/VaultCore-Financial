@@ -9,27 +9,20 @@
             box-sizing: border-box;
             font-family: "Segoe UI", Arial, sans-serif;
         }
-body {
-    margin: 0;
-    min-height: 100vh;
 
-    /* 🔹 Background image */
-    background-image: url("/images/registration.png");
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url("/images/registration.png");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    /* 🔹 Fallback color (importa
-
-    /* 🔹 Image behavior */
-    background-repeat: no-repeat;      /* don’t repeat image */
-    background-position: center;       /* center image */
-    background-size: cover;             /* fill entire screen */
-    background-attachment: fixed;       /* stays fixed on scroll */
-
-    /* 🔹 Layout */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-        /* ================= BRAND ================= */
         .brand {
             margin-top: 40px;
             text-align: center;
@@ -59,7 +52,6 @@ body {
             color: #64748b;
         }
 
-        /* ================= CARD ================= */
         .card {
             background: #ffffff;
             width: 420px;

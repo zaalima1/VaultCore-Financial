@@ -20,7 +20,6 @@ import VaultCore_Financial.entity.User;
 import VaultCore_Financial.repo.UserRepository;
 import VaultCore_Financial.service.AuthService;
 import VaultCore_Financial.service.BalanceService;
-//import VaultCore_Financial.service.TransactionService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -30,20 +29,17 @@ public class ViewController {
 
     private final AuthService authService;
     private final BalanceService balanceService;
-//    private final TransactionService transactionService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public ViewController(
             AuthService authService,
             BalanceService balanceService,
-//            TransactionService transactionService,
             UserRepository userRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.authService = authService;
         this.balanceService = balanceService;
-//        this.transactionService = transactionService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -84,7 +80,6 @@ public class ViewController {
 
     @PostMapping("/login")
     public String login(@ModelAttribute LoginRequest request, Model model) {
-
         try {
             authService.initiateLogin(request);
             model.addAttribute("otpStage", true);
@@ -143,9 +138,9 @@ public class ViewController {
         }
     }
 
+
     @PostMapping("/resend-otp")
     public String resendOtp(@RequestParam String email, Model model) {
-
         try {
             authService.resendOtp(email);
             model.addAttribute("otpStage", true);
@@ -165,17 +160,13 @@ public class ViewController {
     @GetMapping("/dashboard-page")
     public String dashboard(Model model) {
 
-        String email = SecurityContextHolder.getContext()
-                                           .getAuthentication()
-                                           .getName();
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
 
         BigDecimal balance = balanceService.getBalance(email);
-
         model.addAttribute("balance", balance);
-//        model.addAttribute(
-//            "transactions",
-//            transactionService.getUserTransactions(email)
-       
 
         return "dashboard";
     }

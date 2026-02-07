@@ -253,7 +253,7 @@
             <ul class="menu">
                 <li><a href="#" onclick="showDashboard()">Dashboard</a></li>
                 <li><a href="#" onclick="showSendMoney()">Send Money</a></li>
-                    <li><a href="#" onclick="showHistory()">History</a></li>
+                <li><a href="#" onclick="showHistory()">History</a></li>
                 <li><a href="#" onclick="showAddMoney()">Add Money</a></li>
                 <li><a th:href="@{/logout}" class="logout">Logout</a></li>
             </ul>
@@ -510,7 +510,6 @@
 
             addForm.classList.add("hidden");
             addSuccess.classList.remove("hidden");
-
             const id = "ADD" + Math.floor(Math.random() * 100000000);
             addTxn.innerText = "Transaction ID: " + id;
 
