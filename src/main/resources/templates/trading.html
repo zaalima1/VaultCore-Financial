@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Trading & Portfolio Dashboard</title>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:"Segoe UI",Arial;
+    background:#0b0e13;
+    color:#fff;
+}
+header{
+    padding:20px;
+}
+header h1{margin:0}
+header p{color:#aaa}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    padding:20px;
+}
+.card{
+    background:#161b22;
+    padding:20px;
+    border-radius:12px;
+}
+.card span{color:#aaa}
+.card h2{margin:10px 0 0}
+.green h2{color:#2ecc71}
+
+.main{
+    display:grid;
+    grid-template-columns:3fr 1fr;
+    gap:20px;
+    padding:20px;
+}
+
+.chart-box,.api-box{
+    background:#161b22;
+    padding:20px;
+    border-radius:12px;
+}
+
+.chart-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.filters button,.stocks button{
+    background:#1f6feb;
+    border:none;
+    color:#fff;
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    margin:2px;
+    font-size:12px;
+}
+
+.stocks{margin:10px 0}
+
+.api-box p{margin:8px 0}
+.good{color:#2ecc71}
+
+.progress{
+    background:#333;
+    height:8px;
+    border-radius:10px;
+    overflow:hidden;
+}
+.progress-bar{
+    width:75%;
+    height:100%;
+    background:#f1c40f;
+}
+
+.table-section{
+    padding:20px;
+}
+.table-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+.table-header button{
+    background:#1f6feb;
+    border:none;
+    color:#fff;
+    padding:6px 12px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#161b22;
+    border-radius:12px;
+    overflow:hidden;
+}
+th,td{
+    padding:12px;
+    text-align:left;
+    border-bottom:1px solid #222;
+}
+th{color:#aaa;font-weight:500}
+.buy{
+    background:#2ecc71;
+    border:none;
+    color:#fff;
+    padding:6px 10px;
+    border-radius:6px;
+}
+.sell{
+    background:#e74c3c;
+    border:none;
+    color:#fff;
+    padding:6px 10px;
+    border-radius:6px;
+}
+@media(max-width:900px){
+    .cards{grid-template-columns:1fr}
+    .main{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>📈 Trading & Portfolio Dashboard</h1>
+    <p>Real-time market data and portfolio management</p>
+</header>
+
+<section class="cards">
+    <div class="card">
+        <span>Total Portfolio Value</span>
+        <h2 id="portfolio">₹12,45,196.83</h2>
+    </div>
+    <div class="card green">
+        <span>Day's Gain / Loss</span>
+        <h2 id="gain">+₹7,651.08 (+0.62%)</h2>
+    </div>
+    <div class="card">
+        <span>Available Balance</span>
+        <h2 id="balance">₹1,25,000.00</h2>
+    </div>
+</section>
+
+<section class="main">
+    <div class="chart-box">
+        <div class="chart-header">
+            <h3 id="stockTitle">RELIANCE</h3>
+            <div class="filters">
+                <button onclick="setChartType('line')">Line</button>
+                <button onclick="setChartType('bar')">Bar</button>
+                <button onclick="loadRange('1D')">1D</button>
+                <button onclick="loadRange('1W')">1W</button>
+                <button onclick="loadRange('1M')">1M</button>
+                <button onclick="loadRange('1Y')">1Y</button>
+            </div>
+        </div>
+
+        <div class="stocks">
+            <button onclick="changeStock('RELIANCE')">RELIANCE</button>
+            <button onclick="changeStock('TCS')">TCS</button>
+            <button onclick="changeStock('INFY')">INFY</button>
+            <button onclick="changeStock('HDFC')">HDFC</button>
+        </div>
+
+        <canvas id="chart"></canvas>
+    </div>
+
+    <div class="api-box">
+        <h4>API Status</h4>
+        <p>Live - <span class="good">Good (165ms)</span></p>
+        <div class="progress"><div class="progress-bar"></div></div>
+    </div>
+</section>
+
+<section class="table-section">
+    <div class="table-header">
+        <h3>Live Stock Market</h3>
+        <button onclick="loadTable()">🔄 Refresh</button>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Company</th>
+            <th>Price</th>
+            <th>Change</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</section>
+
+<script>
+let currentStock="RELIANCE";
+let chartType="line";
+let chart;
+
+const stockData={
+    RELIANCE:[2380,2395,2370,2400,2382],
+    TCS:[3500,3485,3520,3510,3534],
+    INFY:[1420,1430,1450,1440,1452],
+    HDFC:[1680,1675,1665,1670,1674]
+};
+
+function drawChart(){
+    const ctx=document.getElementById("chart");
+    if(chart) chart.destroy();
+
+    chart=new Chart(ctx,{
+        type:chartType,
+        data:{
+            labels:["09:00","11:00","13:00","15:00","Close"],
+            datasets:[{
+                label:currentStock,
+                data:stockData[currentStock],
+                borderColor:"#1f6feb",
+                backgroundColor:"#1f6feb",
+                tension:0.4
+            }]
+        },
+        options:{
+            responsive:true,
+            plugins:{legend:{display:false}}
+        }
+    });
+}
+
+function changeStock(stock){
+    currentStock=stock;
+    document.getElementById("stockTitle").innerText=stock;
+    drawChart();
+}
+
+function setChartType(type){
+    chartType=type;
+    drawChart();
+}
+
+function loadRange(range){
+    alert("Loaded data for "+range);
+}
+
+function loadTable(){
+    const tbody=document.getElementById("tableBody");
+    tbody.innerHTML="";
+    for(let s in stockData){
+        let price=stockData[s].slice(-1)[0];
+        tbody.innerHTML+=`
+        <tr>
+            <td>${s}</td>
+            <td>${s} Ltd</td>
+            <td>₹${price}</td>
+            <td style="color:#2ecc71">+1.12%</td>
+            <td>
+                <button class="buy" onclick="trade('Buy','${s}')">Buy</button>
+                <button class="sell" onclick="trade('Sell','${s}')">Sell</button>
+            </td>
+        </tr>`;
+    }
+}
+
+function trade(type,stock){
+    alert(type+" order placed for "+stock);
+}
+
+drawChart();
+loadTable();
+</script>
+
+</body>
+</html>

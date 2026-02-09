@@ -25,21 +25,5 @@ public class TransferController {
         return "transfer";
     }
 
-    // ✅ Process Transfer (REAL LOGIC)
-    @PostMapping("/transfer")
-    public String processTransfer(
-            @RequestParam String from,
-            @RequestParam String to,
-            @RequestParam BigDecimal amount,
-            Model model) {
-
-        try {
-            transferService.transfer(from, to, amount);
-            model.addAttribute("success", true);
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-        }
-
-        return "transfer";
-    }
+   
 }

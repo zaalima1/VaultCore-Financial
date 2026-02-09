@@ -18,11 +18,13 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final OtpService otpService;
 
-    public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       JwtService jwtService,
-                       RefreshTokenService refreshTokenService,
-                       OtpService otpService) {
+    public AuthService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService,
+            RefreshTokenService refreshTokenService,
+            OtpService otpService
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
@@ -30,34 +32,36 @@ public class AuthService {
         this.otpService = otpService;
     }
 
-    /**
-     * STEP 1: Validate email & password, then send OTP
-     */
+    // =================================================
+    // STEP 1: Validate email & password → Send OTP
+    // =================================================
     public void initiateLogin(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email"));
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new RuntimeException("Invalid email or password");
         }
 
+        // Generate & send OTP
         otpService.generateOtp(user.getEmail());
     }
 
-    /**
-     * STEP 2: Verify OTP and generate tokens
-     */
+    // =================================================
+    // STEP 2: Verify OTP → Generate Tokens
+    // =================================================
     public AuthResponse verifyOtp(String email, String otp) {
 
-        if (!otpService.verifyOtp(email, otp)) {
-            throw new RuntimeException("Invalid OTP");
+        boolean isOtpValid = otpService.verifyOtp(email, otp);
+        if (!isOtpValid) {
+            throw new RuntimeException("Invalid or expired OTP");
         }
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String accessToken = jwtService.generateAccessToken(email, 15);
+        String accessToken = jwtService.generateAccessToken(email, 15); // minutes
         String refreshToken = refreshTokenService.create(user).getToken();
 
         return new AuthResponse(
@@ -67,16 +71,15 @@ public class AuthService {
         );
     }
 
-    /**
-     * 🔁 RESEND OTP
-     */
+    // =================================================
+    // 🔁 RESEND OTP
+    // =================================================
     public void resendOtp(String email) {
 
         // Ensure user exists
         userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Generate & send NEW OTP
         otpService.generateOtp(email);
     }
 }

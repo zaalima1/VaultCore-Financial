@@ -46,6 +46,7 @@ public class SecurityConfig {
                     "/login",
                     "/verify-otp",
                     "/resend-otp",
+                    "/trading",
                     "/favicon.ico",
                     "/css/**",
                     "/js/**",

@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,9 +23,6 @@ import VaultCore_Financial.entity.User;
 import VaultCore_Financial.repo.UserRepository;
 import VaultCore_Financial.service.AuthService;
 import VaultCore_Financial.service.BalanceService;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ViewController {
@@ -82,9 +82,11 @@ public class ViewController {
     public String login(@ModelAttribute LoginRequest request, Model model) {
         try {
             authService.initiateLogin(request);
+
             model.addAttribute("otpStage", true);
             model.addAttribute("email", request.getEmail());
             model.addAttribute("msg", "OTP sent successfully");
+
             return "login";
         } catch (Exception e) {
             model.addAttribute("msg", "Login Failed ❌ " + e.getMessage());
@@ -100,16 +102,15 @@ public class ViewController {
             RedirectAttributes ra,
             Model model
     ) {
-
         try {
             AuthResponse res = authService.verifyOtp(email, otp);
 
             UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                    email,
-                    null,
-                    List.of(() -> "ROLE_" + res.getRole())
-                );
+                    new UsernamePasswordAuthenticationToken(
+                            email,
+                            null,
+                            List.of(() -> "ROLE_" + res.getRole())
+                    );
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authentication);
@@ -117,18 +118,18 @@ public class ViewController {
 
             HttpSession session = request.getSession(true);
             session.setAttribute(
-                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                context
+                    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                    context
             );
 
             ra.addFlashAttribute("msg", "Login Successful ✅");
 
-            // ✅ ROLE-BASED REDIRECT (THIS IS THE FIX)
+            // ROLE-BASED REDIRECT
             if ("ADMIN".equalsIgnoreCase(res.getRole())) {
                 return "redirect:/admin/dashboard";
-            } else {
-                return "redirect:/dashboard-page";
             }
+
+            return "redirect:/dashboard-page";
 
         } catch (Exception e) {
             model.addAttribute("otpStage", true);
@@ -138,14 +139,15 @@ public class ViewController {
         }
     }
 
-
     @PostMapping("/resend-otp")
     public String resendOtp(@RequestParam String email, Model model) {
         try {
             authService.resendOtp(email);
+
             model.addAttribute("otpStage", true);
             model.addAttribute("email", email);
             model.addAttribute("msg", "A new OTP has been sent.");
+
             return "login";
         } catch (Exception e) {
             model.addAttribute("otpStage", true);
