@@ -43,9 +43,7 @@ public class ViewController {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
-    // ================= REGISTER =================
-
+    
     @GetMapping("/register-page")
     public String registerPage(Model model) {
         model.addAttribute("user", new User());
@@ -77,7 +75,6 @@ public class ViewController {
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
     }
-
     @PostMapping("/login")
     public String login(@ModelAttribute LoginRequest request, Model model) {
         try {

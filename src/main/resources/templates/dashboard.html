@@ -14,14 +14,36 @@
         }
 
         body {
-            min-height: 100vh;
-            background: url("/images/dash.jpg") center/cover fixed no-repeat;
-        }
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+
+    background-image: url("/dashhhh.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+body::before
+ {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+}
+
+.card, .about-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+}
+
+
+
 
         .layout {
             display: flex;
             min-height: 100vh;
-            background: rgba(246, 249, 252, .88)
+           
         }
 
         .sidebar {
@@ -65,13 +87,16 @@
         }
 
         .main-content {
-            margin-left: 240px;
-            width: calc(100% - 240px);
-            padding: 28px
-        }
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    padding: 28px;   /* ✅ FIXED */
+    min-height: 100vh;
+
+    
+}
 
         .card {
-            background: #fff;
+            background:gray;
             border-radius: 16px;
             padding: 24px;
             border: 1px solid #e2e8f0;
@@ -80,7 +105,7 @@
 
         .subtitle {
             font-size: 14px;
-            color: #64748b
+            color: #09121f
         }
 
         .info-grid {
@@ -199,7 +224,7 @@
         .step-dot.active {
             background: #6366f1;
             color: #fff;
-            box-shadow: 0 0 0 6px rgba(99, 102, 241, .15)
+            box-shadow: 0 0 0 6px rgba(49, 51, 123, 0.15)
         }
 
         .step-line {
@@ -240,6 +265,124 @@
             font-size: 46px;
             margin: 0 auto 16px
         }
+        .top-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    justify-content: flex-start; /* LEFT SIDE */
+}
+
+.top-actions button {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid #2563eb;
+    background: #ffffff;
+    color: #2563eb;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.top-actions button:hover {
+    background: #2563eb;
+    color: #ffffff;
+}
+/* ===== PAGE BACKGROUND ===== */
+.main-content {
+
+    min-height: 100vh;
+    padding: 30px;
+      background-image: url("images/dashhhh.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+   
+}
+
+/* ===== SECTION WRAPPER ===== */
+.section {
+    margin-top: 20px;
+}
+
+/* ===== ABOUT / CONTACT CARD ===== */
+.about-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-radius: 18px;
+    padding: 28px 30px;
+    max-width: 900px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+    animation: fadeUp 0.5s ease;
+}
+
+/* ===== HEADINGS ===== */
+.about-card h3 {
+    font-size: 24px;
+    color: #1f3c88;
+    margin-bottom: 12px;
+}
+
+/* ===== SUBTITLE ===== */
+.subtitle {
+    font-size: 15px;
+    color: #475569;
+    margin-bottom: 16px;
+}
+
+/* ===== LIST STYLE ===== */
+.about-card ul {
+    padding-left: 18px;
+    margin: 18px 0;
+}
+
+.about-card ul li {
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #1f2937;
+}
+
+/* ===== PARAGRAPH ===== */
+.about-card p {
+    font-size: 15px;
+}
+
+/* ===== TOP ACTION BUTTONS ===== */
+.top-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.top-actions button {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1px solid #2563eb;
+    background: white;
+    color: #2563eb;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.top-actions button:hover {
+    background: #2563eb;
+    color: white;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+}
+
+/* ===== FADE ANIMATION ===== */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
     </style>
 </head>
 
@@ -253,14 +396,9 @@
             <ul class="menu">
                 <li><a href="#" onclick="showDashboard()">Dashboard</a></li>
                 <li><a href="#" onclick="showSendMoney()">Send Money</a></li>
-                <li><a href="#" onclick="showHistory()">History</a></li>
-				<a th:href="@{/trading}">
-				    Trading
-				</a>
-
-
                 <li><a href="#" onclick="showAddMoney()">Add Money</a></li>
-				
+                <li><a th:href="@{/account/create}">Create Account</a></li>
+                <li><a th:href="@{/trading}">Trading </a></li>
                 <li><a th:href="@{/logout}" class="logout">Logout</a></li>
             </ul>
         </aside>
@@ -268,9 +406,112 @@
         <!-- MAIN CONTENT -->
         <div class="main-content">
 
-            <marquee>
-                🔔 Welcome <span th:text="${username} ?: 'User'"></span> | Secure Banking
-            </marquee>
+          <marquee behavior="scroll" direction="left" scrollamount="6"
+         style="color: white;">
+    🔔 <strong>Welcome,</strong>
+    <span th:text="${username} ?: 'User'"></span>
+    &nbsp;|&nbsp;
+    💳 <strong>Secure Banking</strong>
+    &nbsp;|&nbsp;
+    ⚡ Fast Money Transfers
+    &nbsp;|&nbsp;
+    🔐 24×7 Protected Transactions
+    &nbsp;|&nbsp;
+    🏦 Trusted by Millions
+</marquee>
+          
+
+<!---------------------------about us--------------->
+<div class="top-actions">
+    <button onclick="showDashboard()">Home</button>
+    <button onclick="showAbout()">About Us</button>
+    <button onclick="showContact()">Contact</button>
+    <button  onclick="showTransactions()">Transaction</button>
+
+</div>
+<br>
+<!------------------------------------------------------------------->
+<!-- ABOUT SECTION -->
+<div id="aboutSection" class="section hidden">
+    <div class="about-card">
+        <h3>About VaultCore Financial</h3>
+<p class="subtitle">
+    VaultCore Financial is a next-generation fintech platform designed to
+    deliver secure, lightning-fast, and fully transparent digital banking
+    experiences for modern users.
+</p>
+
+<ul>
+    <li>🔐 <strong>Bank-Grade Security</strong> with end-to-end encryption and secure data handling</li>
+    <li>⚡ <strong>Instant Transfers</strong> with real-time balance updates and zero delay</li>
+    <li>📊 <strong>Smart Transaction Tracking</strong> with complete history and activity insights</li>
+    <li>🏦 <strong>ACID-Compliant Operations</strong> ensuring accuracy, consistency, and reliability</li>
+    <li>🛡️ <strong>Advanced Fraud Protection</strong> with secure sessions and risk monitoring</li>
+    <li>📱 <strong>Modern User Interface</strong> designed for clarity, speed, and ease of use</li>
+    <li>🇮🇳 <strong>India-Ready Architecture</strong> aligned with RBI and local banking standards</li>
+</ul>
+
+<p style="color:#555; line-height:1.7">
+    At VaultCore Financial, our mission is to redefine digital banking by
+    blending cutting-edge fintech innovation with a seamless user experience.
+    We focus on building trust, maintaining transparency, and delivering
+    reliable performance — so every transaction feels safe, fast, and
+    effortless.
+</p>
+
+<p style="color:#1f3c88; font-weight:600; margin-top:12px">
+    VaultCore Financial — Banking built for the future.
+</p>
+
+        
+    </div>
+</div>
+
+<!-- CONTACT SECTION -->
+<div id="contactSection" class="section hidden">
+    <div class="about-card">
+        <h3>Contact VaultCore Financial</h3>
+
+        <p class="subtitle">
+    We’re always here to assist you. Reach out to VaultCore Financial for
+    customer support, service inquiries, or strategic partnership
+    opportunities — our team is ready to help.
+</p>
+
+<ul>
+    <li>📧 <strong>Email Support:</strong> support@vaultcorefinancial.com  
+        <br><span style="color:#666;">Get help with accounts, transactions, or technical issues</span>
+    </li>
+
+    <li>📞 <strong>Customer Care:</strong> +91 98765 43210  
+        <br><span style="color:#666;">Speak directly with our support specialists</span>
+    </li>
+
+    <li>🏢 <strong>Head Office:</strong> Fintech Park, Bengaluru, India  
+        <br><span style="color:#666;">Innovation hub for our digital banking solutions</span>
+    </li>
+
+    <li>⏰ <strong>Support Availability:</strong> Monday – Friday, 9:00 AM – 6:00 PM  
+        <br><span style="color:#666;">Timely assistance during standard business hours</span>
+    </li>
+</ul>
+
+<p style="color:#555; line-height:1.7">
+    At VaultCore Financial, customer satisfaction and security come first.
+    Our dedicated support team ensures quick response times, clear
+    communication, and reliable solutions — so you can bank with
+    confidence every step of the way.
+</p>
+
+<p style="color:#1f3c88; font-weight:600; margin-top:12px">
+    Your trust matters to us — connect with VaultCore Financial today.
+</p>
+
+    </div>
+</div>
+
+
+<!-------------------------------------------------------------------->
 
             <!-- DASHBOARD -->
             <div id="dashboardSection" class="card">
@@ -299,7 +540,7 @@
 
                     <div class="send-header">
                         <h2>Send Money</h2>
-                        <span class="secure-pill">🔒 ACID Compliant</span>
+                        <span class="secure-pill">🔒ACID Compliant</span>
                     </div>
 
                     <div class="stepper">
@@ -412,148 +653,193 @@
 
                 </div>
             </div>
+            <!------------------------------------>    <div id="transactionSection" class="card hidden">
+    <h3>Transaction History</h3>
+    <p class="subtitle">All your recent transfers</p>
 
-            <!-- HISTORY -->
-            <div id="historySection" class="card hidden">
-                <h3>Transaction History</h3>
-                <p class="subtitle">Recent activity</p>
-                <div id="historyList" style="margin-top:18px"></div>
-            </div>
+    <table style="width:100%; margin-top:16px; border-collapse:collapse">
+        <thead>
+            <tr style="background:#eef2ff">
+                <th>Txn ID</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Amount</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody id="txnTable"></tbody>
+    </table>
+</div>
+<!-------------------------------------------------->
+
 
         </div>
     </div>
 
-    <script>
-        let balance = 45000;
-        let history = [];
-        const fee = 10;
+   <script>
+/* ================= BALANCE ================= */
+let balance = localStorage.getItem("balance")
+    ? Number(localStorage.getItem("balance"))
+    : 45000;
 
-        function updateBalanceUI() {
-            balanceText.innerText = "₹" + balance;
-        }
+const fee = 10;
 
-        function hideAll() {
-            dashboardSection.classList.add("hidden");
-            sendMoneySection.classList.add("hidden");
-            addMoneySection.classList.add("hidden");
-            historySection.classList.add("hidden");
-        }
+function updateBalanceUI() {
+    balanceText.innerText = "₹" + balance;
+    localStorage.setItem("balance", balance);
+}
 
-        function showDashboard() {
-            hideAll();
-            dashboardSection.classList.remove("hidden");
-            updateBalanceUI();
-        }
+/* ================= SECTION CONTROL ================= */
+function hideAllSections() {
+    dashboardSection.classList.add("hidden");
+    sendMoneySection.classList.add("hidden");
+    addMoneySection.classList.add("hidden");
+    aboutSection.classList.add("hidden");
+    contactSection.classList.add("hidden");
+}
 
-        function showSendMoney() {
-            hideAll();
-            sendMoneySection.classList.remove("hidden");
-        }
+/* ================= DASHBOARD ================= */
+function showDashboard() {
+    hideAllSections();
+    dashboardSection.classList.remove("hidden");
+    updateBalanceUI();
+}
 
-        function showAddMoney() {
-            hideAll();
-            addMoneySection.classList.remove("hidden");
-        }
+/* ================= SEND MONEY ================= */
+function showSendMoney() {
+    hideAllSections();
+    sendMoneySection.classList.remove("hidden");
+    step1.classList.remove("hidden");
+    step2.classList.add("hidden");
+    step3.classList.add("hidden");
+}
 
-        function showHistory() {
-            hideAll();
-            historySection.classList.remove("hidden");
-            updateHistoryUI();
-        }
+function setAmt(v) {
+    amount.value = v;
+}
 
-        /* SEND MONEY */
-        function setAmt(v) { amount.value = v }
+function goStep2() {
+    if (!fromAcc.value || !toAcc.value || !amount.value) {
+        alert("Fill all details");
+        return;
+    }
+    step1.classList.add("hidden");
+    step2.classList.remove("hidden");
 
-        function goStep2() {
-            if (!fromAcc.value || !toAcc.value || !amount.value) {
-                alert("Fill all details");
-                return;
-            }
-            step1.classList.add("hidden");
-            step2.classList.remove("hidden");
-            s2.classList.add("active"); l2.classList.add("active");
+    cFrom.innerText = fromAcc.value;
+    cTo.innerText = toAcc.value;
+    cAmt.innerText = "₹" + amount.value;
+    cTotal.innerText = "₹" + (Number(amount.value) + fee);
+}
+/*
 
-            cFrom.innerText = fromAcc.value;
-            cTo.innerText = toAcc.value;
-            cAmt.innerText = "₹" + amount.value;
-            cTotal.innerText = "₹" + (Number(amount.value) + fee);
-        }
+function goStep3() {
+    step2.classList.add("hidden");
+    step3.classList.remove("hidden");
 
-        function goStep3() {
-            step2.classList.add("hidden");
-            step3.classList.remove("hidden");
-            s3.classList.add("active");
+    balance -= Number(amount.value);
+    updateBalanceUI();
 
-            balance -= Number(amount.value);
-            updateBalanceUI();
+    txnId.innerText = "Transaction ID: TXN" +
+        Math.floor(Math.random() * 100000000);
+}
+*/
+function goStep3() {
+    step2.classList.add("hidden");
+    step3.classList.remove("hidden");
 
-            const id = "TXN" + Math.floor(Math.random() * 100000000);
-            txnId.innerText = "Transaction ID: " + id;
+    const txn = {
+        id: "TXN" + Math.floor(Math.random() * 100000000),
+        from: fromAcc.value,
+        to: toAcc.value,
+        amount: Number(amount.value),
+        date: new Date().toLocaleString()
+    };
 
-            // record history
-            history.unshift({
-                type: 'send',
-                from: fromAcc.value,
-                to: toAcc.value,
-                amount: Number(amount.value),
-                fee: fee,
-                total: Number(amount.value) + fee,
-                id: id,
-                date: new Date().toLocaleString()
-            });
-            updateHistoryUI();
-        }
+    balance -= txn.amount;
+    updateBalanceUI();
 
-        /* ADD MONEY */
-        function setAddAmt(v) { addAmount.value = v }
+    txnId.innerText = "Transaction ID: " + txn.id;
 
-        function confirmAddMoney() {
-            const amt = Number(addAmount.value);
-            if (amt <= 0) { alert("Enter valid amount"); return; }
+    let txns = JSON.parse(localStorage.getItem("transactions")) || [];
+    txns.unshift(txn); // newest first
+    localStorage.setItem("transactions", JSON.stringify(txns));
+}
 
-            balance += amt;
-            updateBalanceUI();
+function showTransactions() {
+    hideAllSections();
+    transactionSection.classList.remove("hidden");
 
-            addForm.classList.add("hidden");
-            addSuccess.classList.remove("hidden");
-            const id = "ADD" + Math.floor(Math.random() * 100000000);
-            addTxn.innerText = "Transaction ID: " + id;
+    const txns = JSON.parse(localStorage.getItem("transactions")) || [];
+    txnTable.innerHTML = "";
 
-            // record history
-            history.unshift({
-                type: 'add',
-                amount: amt,
-                id: id,
-                date: new Date().toLocaleString()
-            });
-            updateHistoryUI();
-        }
+    if (txns.length === 0) {
+        txnTable.innerHTML =
+            "<tr><td colspan='5'>No transactions yet</td></tr>";
+        return;
+    }
 
-        function updateHistoryUI() {
-            if (!historyList) return;
-            if (history.length === 0) {
-                historyList.innerHTML = '<div class="inner-card">No transactions yet.</div>';
-                return;
-            }
-            let out = '';
-            history.forEach(h => {
-                if (h.type === 'send') {
-                    out += `<div class="inner-card" style="margin-bottom:12px">
-                        <div><strong>${h.id}</strong> — ${h.date}</div>
-                        <div>From: ${h.from}</div>
-                        <div>To: ${h.to}</div>
-                        <div>Amount: ₹${h.amount} • Fee: ₹${h.fee} • Total: ₹${h.total}</div>
-                    </div>`;
-                } else if (h.type === 'add') {
-                    out += `<div class="inner-card" style="margin-bottom:12px">
-                        <div><strong>${h.id}</strong> — ${h.date}</div>
-                        <div>Added: ₹${h.amount}</div>
-                    </div>`;
-                }
-            });
-            historyList.innerHTML = out;
-        }
-    </script>
+    txns.forEach(t => {
+        txnTable.innerHTML += `
+            <tr>
+                <td>${t.id}</td>
+                <td>${t.from}</td>
+                <td>${t.to}</td>
+                <td>₹${t.amount}</td>
+                <td>${t.date}</td>
+            </tr>
+        `;
+    });
+}
+
+
+
+/* ================= ADD MONEY ================= */
+function showAddMoney() {
+    hideAllSections();
+    addMoneySection.classList.remove("hidden");
+    addForm.classList.remove("hidden");
+    addSuccess.classList.add("hidden");
+}
+
+function setAddAmt(v) {
+    addAmount.value = v;
+}
+
+function confirmAddMoney() {
+    const amt = Number(addAmount.value);
+    if (amt <= 0) {
+        alert("Enter valid amount");
+        return;
+    }
+
+    balance += amt;
+    updateBalanceUI();
+
+    addForm.classList.add("hidden");
+    addSuccess.classList.remove("hidden");
+
+    addTxn.innerText = "Transaction ID: ADD" +
+        Math.floor(Math.random() * 100000000);
+}
+
+/* ================= ABOUT & CONTACT ================= */
+function showAbout() {
+    hideAllSections();
+    aboutSection.classList.remove("hidden");
+}
+
+function showContact() {
+    hideAllSections();
+    contactSection.classList.remove("hidden");
+}
+
+/* ================= LOAD ================= */
+window.onload = function () {
+    showDashboard();
+};
+</script>
+
 
 </body>
 

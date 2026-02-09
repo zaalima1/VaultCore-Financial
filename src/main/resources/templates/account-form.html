@@ -59,6 +59,8 @@ button:hover{
   <h2>Create Account</h2>
 
   <form th:action="@{/account/save}" th:object="${account}" method="post">
+  <label>Full Name</label>
+    <input type="text" th:field="*{name}" required>
 
     <label>Account Number</label>
     <input type="text" th:field="*{accountNumber}" required>
@@ -67,7 +69,7 @@ button:hover{
     <input type="text" th:field="*{mobilenum}" required>
 
     <label>Date of Birth</label>
-    <input type="date" th:field="*{dateofbirth}" required>
+    <input type="date" th:field="*{dateOfBirth}" required>
 
     <label>Gender</label>
     <select th:field="*{gender}">
