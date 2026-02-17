@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Admin - Pending KYC</title>
+
+<style>
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    margin: 0;
+    padding: 40px;
+}
+
+.container {
+    background: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    max-width: 1000px;
+    margin: auto;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #1e3c72;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #1e3c72;
+    color: white;
+    padding: 12px;
+    text-align: center;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+    background-color: #f5f7fa;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.approve-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: 0.3s;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    margin: 0;
+    padding: 40px;
+    animation: fadeInBody 1s ease-in;
+}
+
+.container {
+    background: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    max-width: 1000px;
+    margin: auto;
+    animation: slideUp 0.8s ease-out;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #1e3c72;
+    animation: fadeInText 1.2s ease-in;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #1e3c72;
+    color: white;
+    padding: 12px;
+    text-align: center;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Table row animation */
+tr {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: rowFade 0.6s forwards;
+}
+
+tr:nth-child(1) { animation-delay: 0.1s; }
+tr:nth-child(2) { animation-delay: 0.2s; }
+tr:nth-child(3) { animation-delay: 0.3s; }
+tr:nth-child(4) { animation-delay: 0.4s; }
+tr:nth-child(5) { animation-delay: 0.5s; }
+
+tr:hover {
+    background-color: #f5f7fa;
+    transform: scale(1.01);
+    transition: 0.3s;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+    animation: pulse 2s infinite;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.approve-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: 0.3s;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+}
+
+/* Go Back Button */
+a[href="/"] {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 15px;
+    background: #dc3545;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+a[href="/"]:hover {
+    background: #c82333;
+    transform: scale(1.05);
+}
+
+/* Animations */
+@keyframes fadeInBody {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInText {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes rowFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,193,7, 0.6); }
+    70% { box-shadow: 0 0 0 10px rgba(255,193,7, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,193,7, 0); }
+}
+
+</style>
+
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>Pending KYC Requests</h2>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Account No</th>
+        <th>Aadhaar</th>
+        <th>PAN</th>
+        <th>Mobile</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+    <tr th:each="kyc : ${kycList}">
+        <td th:text="${kyc.id}"></td>
+        <td th:text="${kyc.accountNumber}"></td>
+        <td th:text="${kyc.aadhaarNumber}"></td>
+        <td th:text="${kyc.panNumber}"></td>
+        <td th:text="${kyc.mobileNumber}"></td>
+
+        <td>
+            <span th:text="${kyc.kycStatus}"
+                  th:classappend="${kyc.kycStatus == 'APPROVED'} ? 'status status-approved' : 'status status-pending'">
+            </span>
+        </td>
+
+        <td>
+            <a class="approve-btn"
+               th:href="@{/admin/kyc/approve/{id}(id=${kyc.id})}">
+               Approve
+            </a>
+        </td>
+    </tr>
+
+</table>
+</div>
+
+</body>
+</html>

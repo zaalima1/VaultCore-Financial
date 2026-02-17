@@ -1,53 +1,55 @@
 package VaultCore_Financial.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import VaultCore_Financial.entity.Admin;
-import VaultCore_Financial.service.AdminService;
-import VaultCore_Financial.service.AuthService;
-import jakarta.servlet.http.HttpSession;
-@Controller
+import org.springframework.web.bind.annotation.RestController;
+
+import VaultCore_Financial.entity.Account;
+import VaultCore_Financial.entity.Auditable;
+import VaultCore_Financial.repo.AccountRepository;
+
+
+
+@RestController
 @RequestMapping("/account")
-public class AccountController
-{
-	private final AdminService authService;
+public class AccountController {
 
-	public AccountController(AdminService authService) {
-	    this.authService = authService;
-	}
+    private final AccountRepository accountRepo;
 
-    
-    @GetMapping("/create")
-    public String showCreateForm(Model model) {
-        model.addAttribute("account", new Admin());
-        return "home"; // account-form.html
-    }
-    @PostMapping("/save")
-    public String saveAdmin(
-            @ModelAttribute("account") Admin admin,
-            HttpSession session
-    ) {
-        Admin savedAdmin = authService.Admin1(admin);
-        session.setAttribute("loggedUser", savedAdmin);
-
-        return "redirect:/account/dashboard2";
+    public AccountController(AccountRepository accountRepo) {
+        this.accountRepo = accountRepo;
     }
 
-    @GetMapping("/dashboard2")
-    public String dashboard(HttpSession session, Model model) {
-
-        Admin user = (Admin) session.getAttribute("loggedUser");
-
-        if (user == null) {
-            return "redirect:/account/create";
+    @PostMapping("/create")
+    @Auditable(module = "ACCOUNT", action = "ACCOUNT_CREATED")
+    public ResponseEntity<String> createAccount(@RequestBody Account account) {
+        if (accountRepo.existsByAccountNumber(account.getAccountNumber())) {
+            return ResponseEntity.badRequest()
+                    .body("Account already exists");
         }
 
-        model.addAttribute("user", user);
-        return "welcome"; // welcome.html
+        accountRepo.save(account);
+        return ResponseEntity.ok("Account created successfully");
+    }
+    @Auditable(module = "account", action = "account_check")
+    @GetMapping("/balance/{accountNumber}")
+    public ResponseEntity<String> getBalance(@PathVariable String accountNumber) {
+
+        Account account = accountRepo.findByAccountNumber(accountNumber)
+                .orElse(null);
+
+        if (account == null) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Account number not found!");
+        }
+
+        return ResponseEntity.ok("₹ " + account.getBalance());
     }
 }
-

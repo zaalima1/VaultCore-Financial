@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import VaultCore_Financial.dto.AuthResponse;
 import VaultCore_Financial.dto.LoginRequest;
+import VaultCore_Financial.entity.Auditable;
 import VaultCore_Financial.entity.User;
 import VaultCore_Financial.repo.UserRepository;
 import VaultCore_Financial.service.AuthService;
@@ -43,7 +44,7 @@ public class ViewController {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    
+    @Auditable(module = "register", action = "registration")
     @GetMapping("/register-page")
     public String registerPage(Model model) {
         model.addAttribute("user", new User());
@@ -69,7 +70,7 @@ public class ViewController {
     }
 
     // ================= LOGIN =================
-
+    @Auditable(module = "login", action = "login_page")
     @GetMapping("/login-page")
     public String loginPage(Model model) {
         model.addAttribute("loginRequest", new LoginRequest());
@@ -90,7 +91,7 @@ public class ViewController {
             return "login";
         }
     }
-
+    @Auditable(module = "verify_otp", action = "otp verifying")
     @PostMapping("/verify-otp")
     public String verifyOtp(
             @RequestParam String email,
@@ -123,7 +124,7 @@ public class ViewController {
 
             // ROLE-BASED REDIRECT
             if ("ADMIN".equalsIgnoreCase(res.getRole())) {
-                return "redirect:/admin/dashboard";
+                return "redirect:/admin";
             }
 
             return "redirect:/dashboard-page";
@@ -155,7 +156,7 @@ public class ViewController {
     }
 
     // ================= DASHBOARD =================
-
+    @Auditable(module = "dashboard", action = "Dashboard")
     @GetMapping("/dashboard-page")
     public String dashboard(Model model) {
 
@@ -169,4 +170,15 @@ public class ViewController {
 
         return "dashboard";
     }
+    @PostMapping("/logout")
+    public String logout() {
+        return "Logout successful";
+    }
+    
+    @GetMapping("/admin")
+    public  String fun1()
+    {
+    	return "admin2";
+    }
+    
 }

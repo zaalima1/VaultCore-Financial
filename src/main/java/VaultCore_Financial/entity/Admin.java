@@ -16,7 +16,7 @@ public class Admin {
 
     @Column(nullable = false)
     @NotBlank(message = "Name is required")
-    private String name;
+    private String username;
 
     @Column(nullable = false, unique = true)
     @NotBlank(message = "Account number is required")
@@ -32,23 +32,93 @@ public class Admin {
 
     @Column
     private String gender;
+    private String email;
 
-    // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    @OneToOne(mappedBy = "admin", cascade = CascadeType.ALL)
+    private Kyc kyc;
 
-    public String getAccountNumber() { return accountNumber; }
-    public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
-    public String getMobileNumber() { return mobileNumber; }
-    public void setMobileNumber(String mobileNumber) { this.mobileNumber = mobileNumber; }
+	public Long getId() {
+		return id;
+	}
 
-    public LocalDate getDateOfBirth() { return dateOfBirth; }
-    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getGender() { return gender; }
-    public void setGender(String gender) { this.gender = gender; }
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	public LocalDate getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Kyc getKyc() {
+		return kyc;
+	}
+
+	public void setKyc(Kyc kyc) {
+		this.kyc = kyc;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public double getStatus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+   
+    
 }

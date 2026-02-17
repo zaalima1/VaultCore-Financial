@@ -1,37 +1,64 @@
 package VaultCore_Financial.controller;
 
-import VaultCore_Financial.service.PdfStatementService;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+
+import org.springframework.http.*;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/statements")
+import VaultCore_Financial.entity.Transaction;
+import VaultCore_Financial.repo.TransactionRepository;
+import VaultCore_Financial.service.PdfStatementService;
+
+import java.io.ByteArrayInputStream;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.List;
+
+@Controller
+@RequestMapping("/statement")
 public class StatementController {
 
+    private final TransactionRepository transactionRepository;
     private final PdfStatementService pdfService;
 
-    public StatementController(PdfStatementService pdfService) {
+    public StatementController(TransactionRepository transactionRepository,
+                               PdfStatementService pdfService) {
+        this.transactionRepository = transactionRepository;
         this.pdfService = pdfService;
     }
 
-    @GetMapping(
-        value = "/{userId}",
-        produces = MediaType.APPLICATION_PDF_VALUE
-    )
-    public ResponseEntity<byte[]> downloadStatement(@PathVariable String userId) {
+    // ✅ Show UI page
+    @GetMapping("/page")
+    public String showStatementPage() {
+        return "statement";
+    }
 
-        byte[] pdf = pdfService.generateMonthlyStatement(userId);
+    @GetMapping("/download/{accountNumber}")
+    public ResponseEntity<byte[]> downloadStatement(@PathVariable String accountNumber) {
+
+        YearMonth currentMonth = YearMonth.now();
+        LocalDateTime start = currentMonth.atDay(1).atStartOfDay();
+        LocalDateTime end = currentMonth.atEndOfMonth().atTime(23, 59, 59);
+
+        List<Transaction> transactions =
+                transactionRepository.findMonthlyTransactions(accountNumber, start, end);
+
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found for this month");
+        }
+
+        ByteArrayInputStream pdf =
+                pdfService.generateMonthlyStatement(accountNumber, transactions);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition",
+                "attachment; filename=Monthly_Statement_" + accountNumber + ".pdf");
 
         return ResponseEntity
                 .ok()
-                .header(
-                        HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=monthly-statement-" + userId + ".pdf"
-                )
+                .headers(headers)
                 .contentType(MediaType.APPLICATION_PDF)
-                .contentLength(pdf.length)
-                .body(pdf);
+                .body(pdf.readAllBytes());
     }
+
 }

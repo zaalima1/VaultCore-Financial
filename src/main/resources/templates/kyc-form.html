@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>KYC Form</title>
+<style>
+/* Reset and font */
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background:BLACK;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Card style */
+.form-card {
+    background:#06163b;
+    padding: 30px 40px;
+    border-radius: 20px;
+    width: 400px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-40px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Form heading */
+.form-card h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: cornsilk;
+    
+}
+
+/* Labels and inputs */
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #555;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+    outline: none;
+}
+
+/* Submit button */
+button {
+    margin-top: 25px;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: #000413;
+    color: WHITE;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: #5a67d8;
+    transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<div class="form-card">
+    <h2>Submit KYC</h2>
+
+    <form th:action="@{/kyc/submit}" th:object="${kyc}" method="post">
+        
+        <label>Account Number</label>
+        <input type="text" th:field="*{accountNumber}" placeholder="Enter your account number" required>
+
+        <label>Aadhaar Number</label>
+        <input type="text" th:field="*{aadhaarNumber}" maxlength="12" placeholder="Enter Aadhaar number" required>
+
+        <label>PAN Number</label>
+        <input type="text" th:field="*{panNumber}" placeholder="Enter PAN number" required>
+
+        <label>Mobile Number</label>
+        <input type="text" th:field="*{mobileNumber}" maxlength="10" placeholder="Enter 10-digit mobile number" required>
+
+        <button type="submit">Submit KYC</button>
+    </form>
+</div>
+
+</body>
+</html>

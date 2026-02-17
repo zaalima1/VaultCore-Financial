@@ -73,38 +73,31 @@
 <body>
 
 <div class="dashboard">
-    <h2>
-        👤 Welcome, <span th:text="${user.name}">User</span> 👋
-    </h2>
+   <h2>
+    👤 Welcome, <span th:text="${user.name}">User</span> 👋
+</h2>
 
-    <div class="profile-row">
-        <span class="label">Account Number</span>
-        <span class="value" th:text="${user.accountNumber}">----</span>
-    </div>
-
-    <div class="profile-row">
-        <span class="label">Mobile</span>
-        <span class="value" th:text="${user.mobileNumber}">----</span>
-    </div>
-
-    <div class="profile-row">
-        <span class="label">Date of Birth</span>
-        <span class="value" th:text="${user.dateOfBirth}">----</span>
-    </div>
-
-    <div class="profile-row">
-        <span class="label">Gender</span>
-        <span class="value" th:text="${user.gender}">----</span>
-    </div>
-
-    <button onclick="goToDashboard()">Go to Dashboard</button>
+<div class="profile-row">
+    <span class="label">Account Number</span>
+    <span class="value" th:text="${user.accountNumber}">----</span>
 </div>
 
-<script>
-    function goToDashboard() {
-        window.location.href = "/dashboard-page";
-    }
-</script>
+<div class="profile-row">
+    <span class="label">Mobile</span>
+    <span class="value" th:text="${user.mobileNumber}">----</span>
+</div>
 
+<div class="profile-row">
+    <span class="label">Date of Birth</span>
+    <span class="value" th:text="${#temporals.format(user.dateOfBirth,'dd/MM/yyyy')}">----</span>
+</div>
+
+<div class="profile-row">
+    <span class="label">Gender</span>
+    <span class="value" th:text="${user.gender}">----</span>
+</div>
+
+<button onclick="window.location.href='/account1/dashboard2'">Go to Dashboard</button>
+   
 </body>
 </html>

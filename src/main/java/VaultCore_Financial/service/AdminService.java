@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import VaultCore_Financial.repo.AdminRepository;
-
+import VaultCore_Financial.entity.Account;
 import VaultCore_Financial.entity.Admin;
 @Service
 public class AdminService {
@@ -30,11 +30,17 @@ public class AdminService {
 			return false;	}
 	
 	}*/
-	public Admin Admin1(Admin admin)
-	{
-        return repo.save(admin);
-    }
+	 public Admin Admin1(Admin admin) {
+
+		    Account account = new Account();
+		    account.setAccountNumber(admin.getAccountNumber());
+		    account.setUsername(admin.getUsername());
+		   
+
+		    admin.setAccount(account);  // connect both
+
+		    return repo.save(admin);
 
     
     
-}
+}}

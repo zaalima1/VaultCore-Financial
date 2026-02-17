@@ -1,128 +1,77 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Admin | Audit Logs</title>
+    <title>Audit Logs</title>
 
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f4f6f9;
+            background: #f4f6f8;
             padding: 20px;
         }
 
         h2 {
             text-align: center;
             margin-bottom: 20px;
-            color: #333;
-        }
-
-        .table-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            background: #fff;
         }
 
         th, td {
             padding: 10px;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #ddd;
             text-align: left;
-            vertical-align: top;
         }
 
         th {
-            background: #1e293b;
-            color: #fff;
-            position: sticky;
-            top: 0;
+            background: #2c3e50;
+            color: white;
         }
 
-        tr:hover {
-            background-color: #f1f5f9;
+        tr:nth-child(even) {
+            background: #f2f2f2;
         }
 
-        .action {
+        .module {
             font-weight: bold;
-            color: #2563eb;
-        }
-
-        .timestamp {
-            color: #64748b;
-            font-size: 13px;
-        }
-
-        .search-box {
-            margin-bottom: 15px;
-            text-align: right;
-        }
-
-        .search-box input {
-            padding: 7px;
-            width: 250px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
         }
     </style>
-
-    <script>
-        function searchTable() {
-            let input = document.getElementById("searchInput").value.toLowerCase();
-            let rows = document.querySelectorAll("tbody tr");
-
-            rows.forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
-            });
-        }
-    </script>
 </head>
 
 <body>
 
-<h2>📋 System Audit Logs</h2>
+<h2>Audit Logs (Compliance & Monitoring)</h2>
 
-<div class="table-container">
-
-    <div class="search-box">
-        🔍 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search logs...">
-    </div>
-
-    <table>
-        <thead>
+<table>
+    <thead>
         <tr>
             <th>ID</th>
-            <th>User</th>
+            <th>Module</th>
             <th>Action</th>
             <th>Method</th>
             <th>Parameters</th>
-            <th>Response</th>
-            <th>IP Address</th>
-            <th>Timestamp</th>
+            <th>User</th>
+            <th>Time</th>
         </tr>
-        </thead>
+    </thead>
 
-        <tbody>
+    <tbody>
         <tr th:each="log : ${logs}">
             <td th:text="${log.id}"></td>
-            <td th:text="${log.username}"></td>
-            <td class="action" th:text="${log.action}"></td>
+            <td class="module" th:text="${log.module}"></td>
+            <td th:text="${log.action}"></td>
             <td th:text="${log.methodName}"></td>
             <td th:text="${log.parameters}"></td>
-            <td th:text="${log.response}"></td>
-            <td th:text="${log.ipAddress}"></td>
-            <td class="timestamp" th:text="${#temporals.format(log.timestamp, 'dd-MM-yyyy HH:mm:ss')}"></td>
+            <td th:text="${log.performedBy}"></td>
+            <td th:text="${log.timestamp != null ? #temporals.format(log.timestamp, 'dd-MM-yyyy HH:mm') : 'N/A'}"></td>
         </tr>
-        </tbody>
-    </table>
-
-</div>
+    </tbody>
+</table>
 
 </body>
 </html>

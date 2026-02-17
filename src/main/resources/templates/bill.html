@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction Bill</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .bill-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 50px;
+            width: 420px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+        }
+
+        .success {
+            color: #16a34a;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .info {
+            text-align: left;
+            margin-top: 15px;
+            font-size: 17px;
+        }
+
+        .info p {
+            margin: 10px 0;
+        }
+
+        .amount {
+            margin-top: 20px;
+            font-size: 26px;
+            font-weight: bold;
+            color: #16a34a;
+            text-align: center;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 20px 0;
+        }
+
+        button {
+            margin-top: 30px;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="bill-card">
+    <h1>🎉 Transfer Successful</h1>
+    <p class="success">Your transaction has been completed</p>
+
+    <div class="divider"></div>
+
+    <div class="info">
+        <p><strong>From Account:</strong>
+            <span th:text="${fromAccount}">XXXXXX</span>
+        </p>
+
+        <p><strong>To Account:</strong>
+            <span th:text="${toAccount}">XXXXXX</span>
+        </p>
+    </div>
+
+    <div class="amount">
+        ₹ <span th:text="${amount}">0.00</span>
+    </div>
+
+    <button onclick="window.location.href='/transfer/send1'">
+        Send Another Payment
+    </button>
+ <button onclick="window.location.href='/dashboard-page'">
+        Back To Dsahboard
+    </button>
+</div>
+
+</body>
+</html>

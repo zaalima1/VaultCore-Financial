@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Loan Request Submitted</title>
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    text-align: center;
+}
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #28a745;
+    color: white;
+    font-size: 16px;
+}
+button:hover {
+    background: #218838;
+}
+</style>
+</head>
+<body>
+<div>
+    <h1>✅ Loan request sent to admin!</h1>
+    <a th:href="@{/dashboard-page}"><button>Go Back to Dashboard</button></a>
+</div>
+</body>
+</html>

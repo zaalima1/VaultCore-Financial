@@ -1,59 +1,81 @@
 package VaultCore_Financial.service;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.*;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.pdf.PdfWriter;
+import VaultCore_Financial.entity.Auditable;
+import VaultCore_Financial.entity.Transaction;
+
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import java.time.YearMonth;
+import java.util.List;
 
 @Service
 public class PdfStatementService {
+	 @Auditable(module = "PDF", action = "pdf_downloading")
+	 public ByteArrayInputStream generateMonthlyStatement(String accountNumber, List<Transaction> transactions) {
 
-    public byte[] generateMonthlyStatement(String userId) {
+		    // Filter transactions by accountNumber
+		    List<Transaction> filteredTxns = transactions.stream()
+		        .filter(txn -> accountNumber.equals(txn.getFromAccount()) || accountNumber.equals(txn.getToAccount()))
+		        .toList(); // Java 16+ or use .collect(Collectors.toList()) for earlier versions
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		    Document document = new Document();
+		    ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        try {
-            Document document = new Document();
-            PdfWriter.getInstance(document, outputStream);
+		    try {
+		        PdfWriter.getInstance(document, out);
+		        document.open();
 
-            document.open();
+		        // Title
+		        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+		        Paragraph title = new Paragraph("Monthly Statement", titleFont);
+		        title.setAlignment(Element.ALIGN_CENTER);
+		        document.add(title);
 
-            // Title
-            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
-            Paragraph title = new Paragraph("VaultCore Financial", titleFont);
-            title.setAlignment(Element.ALIGN_CENTER);
-            document.add(title);
+		        document.add(new Paragraph(" "));
+		        document.add(new Paragraph("Account Number: " + accountNumber));
+		        document.add(new Paragraph("Month: " + YearMonth.now()));
 
-            document.add(new Paragraph(" "));
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		        String generatedDate = LocalDateTime.now().format(formatter);
+		        document.add(new Paragraph("Statement Generated On: " + generatedDate));
+		        document.add(new Paragraph(" "));
 
-            // Subtitle
-            Font subTitleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
-            Paragraph subTitle = new Paragraph("Monthly Statement", subTitleFont);
-            subTitle.setAlignment(Element.ALIGN_CENTER);
-            document.add(subTitle);
+		        // Table
+		        PdfPTable table = new PdfPTable(5);
+		        table.setWidthPercentage(100);
+		        table.addCell("Txn ID");
+		        table.addCell("Date & Time");
+		        table.addCell("From");
+		        table.addCell("To");
+		        table.addCell("Amount");
 
-            document.add(new Paragraph(" "));
-            document.add(new Paragraph("User ID: " + userId));
-            document.add(new Paragraph("Statement Period: February 2026"));
+		        DateTimeFormatter txnFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-            document.add(new Paragraph(" "));
-            document.add(new Paragraph("Holdings Summary"));
+		        for (Transaction txn : filteredTxns) {
+		            table.addCell(txn.getTxnId());
+		            String txnDate = (txn.getTimestamp() != null) ? txn.getTimestamp().format(txnFormatter) : "N/A";
+		            table.addCell(txnDate);
+		            table.addCell(txn.getFromAccount());
+		            table.addCell(txn.getToAccount());
+		            table.addCell("₹ " + txn.getAmount());
+		        }
 
-            document.add(new Paragraph("AAPL   - 10 Shares"));
-            document.add(new Paragraph("GOOGL  - 5 Shares"));
-            document.add(new Paragraph("MSFT   - 8 Shares"));
+		        document.add(table);
+		        document.close();
 
-            document.close();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
 
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to generate PDF statement", e);
-        }
+		    return new ByteArrayInputStream(out.toByteArray());
+		}
 
-        return outputStream.toByteArray();
-    }
+    
 }

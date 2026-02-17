@@ -1,100 +1,77 @@
 package VaultCore_Financial.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
-import java.time.Instant;
+
+import org.apache.poi.hpsf.Decimal;
+
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "account")
+@Table(name = "accounts")
 public class Account {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+   
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @Column(name = "account_number", nullable = false, unique = true)
-    private String accountNumber;
-
-    @Column(name = "full_name", nullable = false)
-    private String fullName;
-
-    @Column(nullable = false)
-    private BigDecimal balance;   // ✅ ADD THIS
-
-    @Column(nullable = false)
-    private Instant createdAt;
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = Instant.now();
-        if (balance == null) {
-            balance = BigDecimal.ZERO;
-        }
-    }
-
-    
-    public Long getId() {
-		return id;
-	}
+        private String accountNumber;
+        
+        @Column(nullable = false)
+        private Double balance = 500000.0;
 
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+        private String username;
+        
+        @OneToOne(mappedBy = "account")
+        private Admin admin;
+
+		public Long getId() {
+			return id;
+		}
+
+		public void setId(Long id) {
+			this.id = id;
+		}
+
+		public String getAccountNumber() {
+			return accountNumber;
+		}
+
+		public void setAccountNumber(String accountNumber) {
+			this.accountNumber = accountNumber;
+		}
+
+		public Double getBalance() {
+			return balance;
+		}
+
+		public void setBalance(Double balance) {
+			this.balance = balance;
+		}
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+		public Admin getAdmin() {
+			return admin;
+		}
+
+		public void setAdmin(Admin admin) {
+			this.admin = admin;
+		}
+
+		
+		
 
 
-	public User getUser() {
-		return user;
-	}
 
+	
 
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-
-	public String getAccountNumber() {
-		return accountNumber;
-	}
-
-
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
-	}
-
-
-	public String getFullName() {
-		return fullName;
-	}
-
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-
-
-	public Instant getCreatedAt() {
-		return createdAt;
-	}
-
-
-	public void setCreatedAt(Instant createdAt) {
-		this.createdAt = createdAt;
-	}
-
-
-	public BigDecimal getBalance() {
-        return balance;
-    }
-
-    // ✅ CORRECT SETTER
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
+  
 }

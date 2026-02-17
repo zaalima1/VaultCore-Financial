@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Download Statement</title>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4e73df, #1cc88a);
+            overflow: hidden;
+        }
+
+        /* Animated background circles */
+        body::before, body::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        body::before {
+            top: -100px;
+            left: -100px;
+        }
+
+        body::after {
+            bottom: -100px;
+            right: -100px;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(20px); }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            margin-bottom: 25px;
+        }
+
+        input {
+            padding: 12px;
+            width: 250px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            box-shadow: 0 0 10px #fff;
+            transform: scale(1.05);
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            background: white;
+            color: #4e73df;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #f8f9fc;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>📄 Download Monthly Statement</h2>
+
+    <form method="get"
+          onsubmit="this.action='/statement/download/' + document.getElementById('accountNumber').value;">
+
+        <input type="text"
+               id="accountNumber"
+               placeholder="Enter Account Number"
+               required />
+
+        <br>
+
+        <button type="submit">Download PDF</button>
+    </form>
+</div>
+
+</body>
+</html>
