@@ -22,6 +22,15 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 	            @Param("start") LocalDateTime start,
 	            @Param("end") LocalDateTime end
 	    );
+	
+	@Query("SELECT t FROM Transaction t " +
+		       "WHERE t.fromAccount = :accountNumber OR t.toAccount = :accountNumber " +
+		       "ORDER BY t.timestamp DESC")
+		List<Transaction> findAllByAccount(@Param("accountNumber") String accountNumber);
+
+
+
+	List<Transaction> findByFromAccountOrToAccount(String from, String to);
 
 }
 

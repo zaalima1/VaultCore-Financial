@@ -23,4 +23,5 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     Page<Admin> findByUsernameContainingIgnoreCaseAndStatus(
             String username, String status, Pageable pageable);
+    Admin findByEmail(String email);
 }

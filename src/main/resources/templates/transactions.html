@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Transaction History</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9fafb;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 90%;
+            margin: 30px auto;
+            background-color: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4f46e5;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .failed {
+            color: red;
+            font-weight: bold;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #4f46e5;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3730a3;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Your Transaction History</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Txn ID</th>
+            <th>From Account</th>
+            <th>To Account</th>
+            <th>Amount</th>
+            <th>Date & Time</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <!-- If transactions exist -->
+        <tr th:each="txn : ${transactions}">
+            <td th:text="${txn.txnId}"></td>
+            <td th:text="${txn.fromAccount}"></td>
+            <td th:text="${txn.toAccount}"></td>
+            <td th:text="${txn.amount}"></td>
+
+            <!-- IMPORTANT: Using #temporals for LocalDateTime -->
+            <td th:text="${#temporals.format(txn.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></td>
+
+            <td th:text="${txn.status}"
+                th:classappend="${txn.status == 'SUCCESS'} ? 'success' : 'failed'">
+            </td>
+        </tr>
+
+        <!-- If no transactions -->
+        <tr th:if="${#lists.isEmpty(transactions)}">
+            <td colspan="6">No transactions found.</td>
+        </tr>
+
+    </tbody>
+</table>
+
+<div class="btn-container">
+    <a th:href="@{/dashboard-page}">
+        <button>Back to Dashboard</button>
+    </a>
+</div>
+
+</body>
+</html>

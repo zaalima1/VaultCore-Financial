@@ -1,6 +1,7 @@
 package VaultCore_Financial.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -55,4 +56,12 @@ public class TransactionService {
 
         txnRepo.save(txn);
     }
+    public List<Transaction> getTransactionsByAccount(String accountNumber) {
+        return txnRepo.findByFromAccountOrToAccount(accountNumber, accountNumber);
+    }
+
+
+
+
+
 }
