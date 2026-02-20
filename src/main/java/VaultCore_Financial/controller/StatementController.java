@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import VaultCore_Financial.entity.Transaction;
 import VaultCore_Financial.repo.TransactionRepository;
 import VaultCore_Financial.service.PdfStatementService;
+import VaultCore_Financial.service.TransactionService;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
@@ -20,11 +22,16 @@ public class StatementController {
 
     private final TransactionRepository transactionRepository;
     private final PdfStatementService pdfService;
+    private final TransactionService txnService;
+
+  
+        
 
     public StatementController(TransactionRepository transactionRepository,
-                               PdfStatementService pdfService) {
+                               PdfStatementService pdfService,TransactionService txnService) {
         this.transactionRepository = transactionRepository;
         this.pdfService = pdfService;
+        this.txnService = txnService;
     }
 
     // ✅ Show UI page
@@ -34,25 +41,17 @@ public class StatementController {
     }
 
     @GetMapping("/download/{accountNumber}")
-    public ResponseEntity<byte[]> downloadStatement(@PathVariable String accountNumber) {
-
-        YearMonth currentMonth = YearMonth.now();
-        LocalDateTime start = currentMonth.atDay(1).atStartOfDay();
-        LocalDateTime end = currentMonth.atEndOfMonth().atTime(23, 59, 59);
+    public ResponseEntity<byte[]> downloadStatement(@PathVariable String accountNumber) throws Exception {
 
         List<Transaction> transactions =
-                transactionRepository.findMonthlyTransactions(accountNumber, start, end);
-
-        if (transactions.isEmpty()) {
-            System.out.println("No transactions found for this month");
-        }
+                txnService.getTransactionsByAccount(accountNumber);
 
         ByteArrayInputStream pdf =
                 pdfService.generateMonthlyStatement(accountNumber, transactions);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
-                "attachment; filename=Monthly_Statement_" + accountNumber + ".pdf");
+                "attachment; filename=statement_" + accountNumber + ".pdf");
 
         return ResponseEntity
                 .ok()
