@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Create Account</title>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{
+  background:#f5f7fb;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.card{
+  background:#fff;
+  width:420px;
+  padding:28px;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+h2{
+  text-align:center;
+  margin-bottom:20px;
+}
+label{
+  font-size:14px;
+  font-weight:600;
+  margin-top:12px;
+  display:block;
+}
+input,select{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  border-radius:12px;
+  border:1px solid #ddd;
+}
+button{
+  margin-top:20px;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:#4f46e5;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover{
+  background:#4338ca;
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+  <h2>Create Account</h2>
+
+  <form th:action="@{/account/save}" th:object="${account}" method="post">
+<<<<<<< HEAD
+=======
+  <label>Full Name</label>
+    <input type="text" th:field="*{name}" required>
+>>>>>>> 5abb3a4d3f63f7044d0c32c3bf2e822dea0beeeb
+
+    <label>Account Number</label>
+    <input type="text" th:field="*{accountNumber}" required>
+
+    <label>Mobile Number</label>
+    <input type="text" th:field="*{mobilenum}" required>
+
+    <label>Date of Birth</label>
+<<<<<<< HEAD
+    <input type="date" th:field="*{dateofbirth}" required>
+=======
+    <input type="date" th:field="*{dateOfBirth}" required>
+>>>>>>> 5abb3a4d3f63f7044d0c32c3bf2e822dea0beeeb
+
+    <label>Gender</label>
+    <select th:field="*{gender}">
+      <option value="">Select</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <button type="submit">Create Account</button>
+  </form>
+</div>
+</body>
+</html>
